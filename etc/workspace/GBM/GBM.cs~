@@ -1,0 +1,29 @@
+
+using System;
+
+namespace Application
+{
+	
+	
+	public class GBM
+	{
+		int D{ get; set value;}
+		int P{ get; set value;}
+		
+		double[,] L{ get; set value;}
+		double[,] W{ get; set value;}
+		double[,] J{ get; set value;}
+			
+		public GBM()
+		{
+		}
+	}
+	
+	Main(string[] args)
+	{
+		0.2     , 0.25    , 0.3     , 0.4     , 0.5     , 0.9     , 1
+		
+	}
+		
+		
+}

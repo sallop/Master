@@ -1,0 +1,3 @@
+set terminal postscript enhanced color eps
+set output 'dir-dat/K-t_energy.eps'
+plot 'dir-dat/K-t_energy.dat' u 1:2 with lines title 'En(v^0)','dir-dat/K-t_energy.dat' u 1:3 with lines title 'En(v^1)','dir-dat/K-t_energy.dat' u 1:4 with lines title 'En(v^2)','dir-dat/K-t_energy.dat' u 1:5 with lines title 'En(v^3)','dir-dat/K-t_energy.dat' u 1:6 with lines title 'En(v^4)','dir-dat/K-t_energy.dat' u 1:7 with lines title 'En(v^5)','dir-dat/K-t_energy.dat' u 1:8 with lines title 'En(v^6)','dir-dat/K-t_energy.dat' u 1:9 with lines title 'En(v^7)','dir-dat/K-t_energy.dat' u 1:10 with lines title 'En(v^8)'

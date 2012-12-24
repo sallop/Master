@@ -1,0 +1,533 @@
+#include <iostream>
+#include <cmath>
+#include <cmath>
+#include <cfloat>
+#include <cstdlib>
+#include <cassert>
+#include <time.h>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <algorithm>
+#include <utility>
+#include <vector>
+#include <functional>
+#include <numeric>
+#include <execinfo.h>
+#include <exception>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+#define ONBIT  1
+#define OFFBIT 0
+
+typedef double UnitType;
+typedef boost::numeric::ublas::vector<UnitType> Pattern;
+typedef boost::numeric::ublas::matrix<UnitType> Layer  ;
+typedef std::vector<double> Threshold;
+typedef std::vector<double> Probability;
+
+namespace ub = boost::numeric::ublas;
+
+class CumulativeProbability
+{
+  Probability prob_ ;
+  Probability accumulate_;
+public:
+  CumulativeProbability(Probability prob) : prob_(prob), accumulate_(prob_.size())
+  {
+    std::partial_sum(prob_.begin(), prob_.end(), accumulate_);
+  }
+  double get(size_t idx)
+  {
+    return accumulate_[idx];
+  }
+  double set(size_t idx, double value)
+  {
+    assert(idx < prob_.size);
+    assert(value > 0.0 && value < 1.0);
+    prob_[idx] = value;
+    std::partial_sum(prob_.begin(), prob_.end(), accumulate_);
+    return accumulate_[idx];
+  }
+};
+
+template<typename T> inline
+void symmetrization_U(ub::matrix<T>& W)
+{
+  size_t i, j, size = W.size1();
+  assert(W.size1() == W.size2());
+  for(i=0; i < size; i++){
+    for(j=i; j < size; j++)
+      W(j,i)=W(i,j);
+    W(i,i)=0.0;
+  }
+}
+
+Pattern dtob(int n, size_t size)
+{
+  Pattern ret(size, 0);
+  for (size_t i=0; i < size; i++){ ret[i] = (n>>i) & 0x01;}
+  return ret;
+}
+
+int btod(const Pattern& x)
+{
+  size_t i, ret=0, size=x.size();
+  for(i=0; i < size; i++){ ret += x[i]*(0x01 << i);}
+  return ret;
+}
+
+double sigma(double x)
+{
+  return 1./(1+exp(-x));
+}
+
+double energy(Pattern& v, Pattern& h, Layer& L, Layer& J, Layer& W)
+{
+  size_t i, j, k, m, D=v.size(), P=h.size();
+  double term1=0.0,term2=0.0,term3=0.0;
+  for(i=0;i<D;i++){ for(k=0;k<D;k++){ term1 += v(i)*L(i,k)*v(k);}}
+  for(j=0;j<P;j++){ for(m=0;m<P;m++){ term2 += h(j)*J(j,m)*h(m);}}
+  for(i=0;i<D;i++){ for(j=0;j<P;j++){ term3 += v(i)*W(i,j)*h(j);}}
+  //  term1 = ub::inner_prod(v, ub::inner_prod(L,v));
+  //  term2 = ub::inner_prod(h, ub::inner_prod(J,h));
+  //  term3 = ub::inner_prod(v, ub::inner_prod(W,h));
+  return -0.5*term1 -0.5*term2 -term3;
+}
+
+inline double mean_field_update(int j, Layer& W, Pattern& v, Layer& J, Pattern& mu)
+{
+  size_t i, m, D = v.size(), P = mu.size();
+  double term1 = 0, term2 = 0;
+  for(i=0; i<D; i++) term1 += W(i,j)* v(i);
+  for(m=0; m<j; m++) term2 += J(m,j)*mu(m);
+  for(m++; m<P; m++) term2 += J(m,j)*mu(m);
+  //  term1 = ub::inner_prod(W,v);
+  //  for(m=0; m < j; m++) term2 += J(m,j)*mu(m);
+  //  for(m++; m < P; m++) term2 += J(m,j)*mu(m);
+  return sigma(term1 + term2);
+}
+
+inline double eq4(int j, Layer& W, Pattern& v, Layer& J, Pattern& h)
+{
+  size_t i, m, D = W.size1(), P=W.size2();
+  double term1=0, term2=0;
+  for(i=0; i<D; i++) term1 += W(i,j)*v(i);
+  for(m=0; m<j; m++) term2 += J(j,m)*h(j);
+  for(m++; m<P; m++) term2 += J(j,m)*h(j);
+  //  term1 = ub::inner_prod(W,v);
+  //  for(m=0; m<j; m++) term2 += J(j,m)*h(j);
+  //  for(m++; m<P; m++) term2 += J(j,m)*h(j);
+  return sigma(term1 + term2);
+}
+
+inline double eq5(int i,Layer& W, Pattern& h, Layer& L, Pattern& v)
+{
+  size_t j, k, D = v.size(), P = h.size();
+  double term1=0, term2=0;
+  for(j=0; j<P; j++) term1 += W(i,j)*h(j);
+  for(k=0; k<i; k++) term2 += L(i,k)*v(k);
+  for(k++; k<D; k++) term2 += L(i,k)*v(k);
+  //  term1 = ub::inner_prod(W,h);
+  //  for(k=0; k<i; k++) term2 += L(i,k)*v(k);
+  //  for(k++; k<D; k++) term2 += L(i,k)*v(k);
+  return sigma(term1 + term2);
+}
+
+// Z(\theta)
+double partition_function(Layer& L,
+			  Layer& J,
+			  Layer& W,
+			  std::vector<Pattern>& all_v,
+			  std::vector<Pattern>& all_h)
+{
+  size_t i, j, nV = all_v.size(), nH = all_h.size();
+  double ret=0.0;
+  assert(L.size1() == all_v[0].size());
+  assert(J.size1() == all_h[0].size());
+  for(i=0; i < nV; i++)
+    for(j=0; j < nH; j++){
+      Pattern& v = all_v[i], &h = all_h[j];
+      ret += exp(-energy(v,h,L,J,W));
+    }
+  return ret;
+}
+
+//double boltzmann_distribution(Pattern& v,
+double prob_model_assign_v(Pattern& v,
+			   Layer&   L,
+			   Layer&   J,
+			   Layer&   W,
+			   std::vector<Pattern>& all_v,
+			   std::vector<Pattern>& all_h)
+{
+  size_t i, j, k, nV=all_v.size(), nH=all_h.size();
+  double numer=0.0, denom=0.0;
+  for(i = 0; i < nH; i++)
+    numer += exp(-energy( v, all_h[i], L, J, W));
+  denom = partition_function(L,J,W,all_v,all_h);
+  return numer/denom;
+}
+
+double KLd(Probability& p, Probability& q)
+{
+  size_t i, size = (p.size() == q.size()) ? p.size() : 0;
+  double d=0.0;
+  for (i=0; i < size; i++){d += p[i]*log(p[i]/q[i]);}
+  return d;
+}
+
+void print(Layer& W)
+{
+  size_t i, j;
+  for(i=0; i < W.size1(); i++){
+    for(j=0; j < W.size2(); j++)
+      printf("%8.6lf\t", W(i,j));
+    printf("\n");
+  }
+}
+
+int main(int argc, char **argv)
+{
+  const int D=3, P=2;
+  //const int D=4, P=2; //const int D=4, P=4; //const int D=8, P=4;
+  //const size_t K=5, M=10, N=10, T=100; //const size_t K=100, M=10, N=10, T=100;
+  const size_t K=5, M=1000, N=100, T=100;//const size_t K=100, M=10, N=10, T=100;
+  Layer L(D,D), W(D,P), J(P,P), data, model, zero;
+  Pattern v(D,0), h(P,0);
+  Probability prob_P(0x01<<D, 0), prob_Q(0x01<<D, 0), free_running(0x01<<D, 0);
+  // P: environment dependent, Q:
+  double alpha = 1.0, kl;	// learning rate, store the kl divergence
+
+  // all state
+  std::vector<std::pair<Pattern,double> >train_data(N);
+  std::vector<Pattern>  v_N(      N, Pattern(D));// training vector
+  std::vector<Pattern>  h_N(0x01<<P, Pattern(P));// hidden vector all state
+  std::vector<Pattern> mu_N(      N, Pattern(P));// variational parameter
+
+  // fantasy particle
+  std::vector<Pattern> vf_M(M, Pattern(D,0));// fantasy particle
+  std::vector<Pattern> hf_M(M, Pattern(P,0));// fantasy particle
+
+  size_t d, i, j, k, m, n, p, r, t;
+  FILE* fp;
+  // set training vector
+  // for (n=0; n<N; n++){ v_N[n] = dtob(n,D);}
+  for (n=0; n<N; n++){ v_N[n] = dtob(n,D); }
+  // train_data.insert( std::make_pair( v_N[0], 0.1 ));
+  // train_data.insert( std::make_pair( v_N[1], 0.1 ));
+  // train_data.insert( std::make_pair( v_N[2], 0.05));
+  // train_data.insert( std::make_pair( v_N[3], 0.05));
+  // train_data.insert( std::make_pair( v_N[4], 0.1 ));
+  // train_data.insert( std::make_pair( v_N[5], 0.1 ));
+  // train_data.insert( std::make_pair( v_N[6], 0.4 ));
+  // train_data.insert( std::make_pair( v_N[7], 0.1 ));
+  // assert(false);
+  //1. Randomly initialize mu and
+  for(i=0;i<D;i++){for(j=0;j<D;j++){L(i,j)=0.01*(drand48()-0.5);}}
+  for(i=0;i<D;i++){for(j=0;j<P;j++){W(i,j)=0.01*(drand48()-0.5);}}
+  for(i=0;i<P;i++){for(j=0;j<P;j++){J(i,j)=0.01*(drand48()-0.5);}}
+  // for(i=0;i<D;i++){for(j=0;j<D;j++){L(i,j)=0.0;}}
+  // for(i=0;i<D;i++){for(j=0;j<P;j++){W(i,j)=0.0;}}
+  // for(i=0;i<P;i++){for(j=0;j<P;j++){J(i,j)=0.0;}}
+  // print(L); printf("\n");
+  // print(W); printf("\n");
+  // print(J); printf("\n");
+  // assert(false);
+
+  symmetrization_U(L);
+  //symmetrization_U(W);
+  symmetrization_U(J);
+
+  fp = fopen("dir-gbm/t-kl.dat","w");
+  // 1.Randomly initialize parameters \theta^0 and M fantasy particles
+  for(m=0; m<M; m++){
+    Pattern &vf = vf_M[m], &hf = hf_M[m];
+    for(d=0; d<D; d++){vf[d] = 0.01*(drand48()-0.5);}
+    for(p=0; p<P; p++){hf[p] = 0.01*(drand48()-0.5);}
+  }
+  for(t=0; t<T; t++){
+    //(a) n=1 to N, data dependent expection
+    for(n=0; n<N; n++){
+      Pattern &vn = v_N[n], &mu = mu_N[n];
+      // mean-field updates until convergence
+      // this values convergence about 10-20
+      for(i=0; i < 100; i++){
+	j = rand()%P;
+	mu[j] = mean_field_update(j, W, vn, J, mu);
+	//std::cout << "i=" << i << "mu=" << mu << std::endl;
+      }
+      //assert(false);
+    }
+    //for(i=0; i < N; i++){ std::cout << "mu[" << i << "]="<< mu_N[i] << std::endl;}
+    //assert(false);
+    //(b) m=1 to M
+    for(m=0; m<M; m++){
+      Pattern &vf = vf_M[m], &hf = hf_M[m];
+      // k-step Gibbs sampler using 4,5
+      for(k=0; k<K; k++){
+	j = rand()%P;
+	i = rand()%D;
+	hf[j] = (eq4(j,W,vf,J,hf) > drand48()) ? ONBIT : OFFBIT;
+	vf[i] = (eq5(i,W,hf,L,vf) > drand48()) ? ONBIT : OFFBIT;
+      }// end k
+    }// end m
+    //(c) update
+    {
+      // L
+      data .resize(D,D);
+      model.resize(D,D);
+      zero .resize(D,D);
+      data  = zero;
+      model = zero;
+      for(n=0; n<N; n++){ data  += ub::outer_prod( v_N[n], v_N[n]);}
+      for(m=0; m<M; m++){ model += ub::outer_prod(vf_M[m],vf_M[m]);}
+      L = L + alpha*(data/N - model/M);
+      // W
+      data .resize(D,P);
+      model.resize(D,P);
+      zero .resize(D,P);
+      data  = zero;
+      model = zero;
+      for(n=0; n<N; n++){ data  += ub::outer_prod( v_N[n], mu_N[n]);}
+      for(m=0; m<M; m++){ model += ub::outer_prod(vf_M[m], hf_M[m]);}
+      W = W + alpha*(data/N - model/M);
+      // J
+      data .resize(P,P);
+      model.resize(P,P);
+      zero .resize(P,P);
+      data  = zero; 
+      model = zero;
+      for(n=0; n<N; n++){ data  += ub::outer_prod(mu_N[n], mu_N[n]);}
+      for(m=0; m<M; m++){ model += ub::outer_prod(hf_M[m], hf_M[m]);}
+      J = J + alpha*(data/N - model/M);
+
+      symmetrization_U<double>(L);
+      //symmetrization_U<double>(W); //!this is not symmetric matrix!
+      symmetrization_U<double>(J);
+    }
+    alpha = 1.0/(t+1);
+    fprintf(fp, "%d %lf\n", t, KLd(prob_P,prob_Q));
+  }
+
+  fp = fopen("dir-gbm/mean-field.dat","w");
+  for(n=0; n<N; n++){
+    for(p=0; p<P; p++)
+      fprintf(fp, "%2.1lf\t", mu_N[n][p]);
+    fprintf(fp, "\n");
+  }
+  //   run mean-field updates Eq.88 until convergence
+  fclose(fp);
+
+  fp=fopen("dir-gbm/Layer.dat","w");
+  fprintf(fp, "L=\n");
+  for(i=0; i < D; i++){
+    for(j=0; j < D; j++)
+      fprintf(fp, "%2.1lf\t", L(i,j));
+    fprintf(fp,"\n");
+  }
+  fprintf(fp,"\n");
+  fprintf(fp, "W=\n");
+  for(i=0; i < D; i++){
+    for(j=0; j < P; j++)
+      fprintf(fp, "%2.1lf\t", W(i,j));
+    fprintf(fp,"\n");
+  }
+  fprintf(fp,"\n");
+  fprintf(fp, "J=\n");
+  for(i=0; i < P; i++){
+    for(j=0; j < P; j++)
+      fprintf(fp, "%2.1lf\t", J(i,j));
+    fprintf(fp,"\n");
+  }
+  fprintf(fp,"\n");
+  fclose(fp);
+
+  for(n=0; n<N; n++){
+    Pattern &v = v_N[n];
+    std::cout << "n="   << n
+	      << "\tp=" << prob_model_assign_v(v,L,J,W,v_N,h_N)
+	      << "\t"   << v
+	      << std::endl;
+    //printf("%d %lf\n", n, boltzmann_distribution(v,L,J,W,v_N,h_N));
+  }
+
+  // k-step Gibbs sampler using 4,5
+
+  for(t=0; t<10000; t++){
+    for(k=0; k<10000; k++){
+      j = rand()%P;
+      i = rand()%D;
+      h[j] = (eq4(j,W,v,J,h) > drand48()) ? ONBIT : OFFBIT;
+      v[i] = (eq5(i,W,h,L,v) > drand48()) ? ONBIT : OFFBIT;
+    }// end k
+    free_running[btod(v)]++;
+  }
+  for(i=0; i < free_running.size(); i++){
+    std::cout << dtob(i, D)
+	      << ",free_running["<< i <<"]=" 
+	      << free_running[i]/std::accumulate(free_running.begin(), free_running.end(), 0.0)
+	      << std::endl;
+  }
+  return 0;
+}
+
+/*
+  class RBM
+  {
+  public:
+  RBM(std::vector<Pattern> *pall_visible,
+  std::vector<Pattern> *pall_hidden ,
+  int    T,// time				 
+  int    K,// k-step gibbs sampling	 
+  size_t D,// visible vector dimension	 		
+  size_t P,// hidden vector dimension	 		
+  size_t N,// a training set of data Vector 		
+  size_t M // fantasy particle              
+  )
+  {
+  pall_visible_ = pall_visible;
+  pall_hidden_  = pall_hidden;
+  n_visible_    = (*pall_visible).size();
+  n_hidden_     = (*pall_hidden ).size();
+  T_ = T;// time
+  K_ = K;// k-step gibbs sampling
+  D_ = D;// visible vector dimension
+  P_ = P;// hidden vector dimension
+  N_ = N;// a training set of data Vector
+  M_ = M;// fantasy particle
+
+  }
+  double sigma(double x){ return 1./(1 + exp(-x));}
+  double energy(Pattern& v, Pattern& h);
+  double mean_field_update(int j, Layer& W, Pattern& v, Layer& J, Pattern& mu);
+  double eq4(int j, Layer& W, Pattern& v, Layer& J, Pattern& h);
+  double eq5(int i, Layer& W, Pattern& h, Layer& L, Pattern& v);
+  double partition_function();
+  double boltzmann_distribution(const Pattern& v);
+  void learn();
+  };
+  [4](0,0,0,0),n=0,p=0.103085 , 0.1139
+  [4](1,0,0,0),n=1,p=0.103085 , 0.1002
+  [4](0,1,0,0),n=2,p=0.103085 , 0.0889
+  [4](1,1,0,0),n=3,p=0.097116 , 0.0796
+  [4](0,0,1,0),n=4,p=0.103085 , 0.1051
+  [4](1,0,1,0),n=5,p=0.0974656, 0.0919
+  [4](0,1,1,0),n=6,p=0.115146 , 0.1024
+  [4](1,1,1,0),n=7,p=0.102566 , 0.081
+  [4](0,0,0,1),n=8,p=0.103085 , 0.0733
+  [4](1,0,0,1),n=9,p=0.0722824, 0.0473
+  [4](0,1,0,1),                 0.0273
+  0.0167
+  0.0324
+  0.0183
+  0.0142
+  0.0075
+  mu[0]=[2](0.500334,0.500334)
+  mu[1]=[2](0.50022,0.499667)
+  mu[2]=[2](0.501163,0.501414)
+  mu[3]=[2](0.501049,0.500747)
+  mu[4]=[2](0.500504,0.500474)
+  mu[5]=[2](0.50039,0.499807)
+  mu[6]=[2](0.501333,0.501554)
+  mu[7]=[2](0.501219,0.500887)
+  mu[8]=[2](0.500334,0.500334)
+  mu[9]=[2](0.50022,0.499667)
+  mu[10]=[2](0.501163,0.501414)
+  mu[11]=[2](0.501049,0.500747)
+  mu[12]=[2](0.500504,0.500474)
+  mu[13]=[2](0.50039,0.499807)
+  mu[14]=[2](0.501333,0.501554)
+  mu[15]=[2](0.501219,0.500887)
+  mu[16]=[2](0.500334,0.500334)
+  mu[17]=[2](0.50022,0.499667)
+  mu[18]=[2](0.501163,0.501414)
+  mu[19]=[2](0.501049,0.500747)
+  mu[20]=[2](0.500504,0.500474)
+  mu[21]=[2](0.50039,0.499807)
+  mu[22]=[2](0.501333,0.501554)
+  mu[23]=[2](0.501219,0.500887)
+  mu[24]=[2](0.500334,0.500334)
+  mu[25]=[2](0.50022,0.499667)
+  mu[26]=[2](0.501163,0.501414)
+  mu[27]=[2](0.501049,0.500747)
+  mu[28]=[2](0.500504,0.500474)
+  mu[29]=[2](0.50039,0.499807)
+  mu[30]=[2](0.501333,0.501554)
+  mu[31]=[2](0.501219,0.500887)
+  mu[32]=[2](0.500334,0.500334)
+  mu[33]=[2](0.50022,0.499667)
+  mu[34]=[2](0.501163,0.501414)
+  mu[35]=[2](0.501049,0.500747)
+  mu[36]=[2](0.500504,0.500474)
+  mu[37]=[2](0.50039,0.499807)
+  mu[38]=[2](0.501333,0.501554)
+  mu[39]=[2](0.501219,0.500887)
+  mu[40]=[2](0.500334,0.500334)
+  mu[41]=[2](0.50022,0.499667)
+  mu[42]=[2](0.501163,0.501414)
+  mu[43]=[2](0.501049,0.500747)
+  mu[44]=[2](0.500504,0.500474)
+  mu[45]=[2](0.50039,0.499807)
+  mu[46]=[2](0.501333,0.501554)
+  mu[47]=[2](0.501219,0.500887)
+  mu[48]=[2](0.500334,0.500334)
+  mu[49]=[2](0.50022,0.499667)
+  mu[50]=[2](0.501163,0.501414)
+  mu[51]=[2](0.501049,0.500747)
+  mu[52]=[2](0.500504,0.500474)
+  mu[53]=[2](0.50039,0.499807)
+  mu[54]=[2](0.501333,0.501554)
+  mu[55]=[2](0.501219,0.500887)
+  mu[56]=[2](0.500334,0.500334)
+  mu[57]=[2](0.50022,0.499667)
+  mu[58]=[2](0.501163,0.501414)
+  mu[59]=[2](0.501049,0.500747)
+  mu[60]=[2](0.500504,0.500474)
+  mu[61]=[2](0.50039,0.499807)
+  mu[62]=[2](0.501333,0.501554)
+  mu[63]=[2](0.501219,0.500887)
+  mu[64]=[2](0.500334,0.500334)
+  mu[65]=[2](0.50022,0.499667)
+  mu[66]=[2](0.501163,0.501414)
+  mu[67]=[2](0.501049,0.500747)
+  mu[68]=[2](0.500504,0.500474)
+  mu[69]=[2](0.50039,0.499807)
+  mu[70]=[2](0.501333,0.501554)
+  mu[71]=[2](0.501219,0.500887)
+  mu[72]=[2](0.500334,0.500334)
+  mu[73]=[2](0.50022,0.499667)
+  mu[74]=[2](0.501163,0.501414)
+  mu[75]=[2](0.501049,0.500747)
+  mu[76]=[2](0.500504,0.500474)
+  mu[77]=[2](0.50039,0.499807)
+  mu[78]=[2](0.501333,0.501554)
+  mu[79]=[2](0.501219,0.500887)
+  mu[80]=[2](0.500334,0.500334)
+  mu[81]=[2](0.50022,0.499667)
+  mu[82]=[2](0.501163,0.501414)
+  mu[83]=[2](0.501049,0.500747)
+  mu[84]=[2](0.500504,0.500474)
+  mu[85]=[2](0.50039,0.499807)
+  mu[86]=[2](0.501333,0.501554)
+  mu[87]=[2](0.501219,0.500887)
+  mu[88]=[2](0.500334,0.500334)
+  mu[89]=[2](0.50022,0.499667)
+  mu[90]=[2](0.501163,0.501414)
+  mu[91]=[2](0.501049,0.500747)
+  mu[92]=[2](0.500504,0.500474)
+  mu[93]=[2](0.50039,0.499807)
+  mu[94]=[2](0.501333,0.501554)
+  mu[95]=[2](0.501219,0.500887)
+  mu[96]=[2](0.500334,0.500334)
+  mu[97]=[2](0.50022,0.499667)
+  mu[98]=[2](0.501163,0.501414)
+  mu[99]=[2](0.501049,0.500747)
+*/ 

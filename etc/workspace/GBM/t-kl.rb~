@@ -1,0 +1,14 @@
+#!/usr/bin/ruby
+
+dirnames = ["dir-dat"]
+
+IO.popen("gnuplot -persist","w") do |gp|
+  gp.puts "set title 'Restricted Boltzmann Machine'"
+  gp.puts "set terminal postscript enhanced color eps"
+  gp.puts "set xrange[0:1000]"
+  gp.puts "set yrange[0:1.0]"
+  gp.puts "set grid"
+  gp.puts "set output 'dir-dat/t-kl.eps'"
+  gp.puts "plot 'dir-dat/t-kl.dat' w l title 't-kl'"
+end
+

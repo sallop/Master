@@ -1,0 +1,164 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+\bmdefine{\bx}{x}
+\makeatletter
+\newcommand{\figcaption}[1]{\def\@captype{figure}\caption{#1}}
+\newcommand{\tblcaption}[1]{\def\@captype{table}\caption{#1}}
+\makeatother
+
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2009年4月12日\\塩貝亮宇}
+% \cfoot{}
+%
+%\begin{flushright}%
+%2006年 9月 28日
+%\end{flushright}
+%
+
+\centerline{\Large\gt }
+
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+\section{進捗状況} 
+2素子が同時に発火する確率$pij$が$0.5$となる誤学習が起った。
+
+環境から受け取る信号パターン$\bx$の発火確率$q(\bx)$は
+\begin{table}[htbp]
+ \begin{center}
+ \caption{環境から受けとる入力パターンの確率}
+ \begin{tabular}{|c|c|c|}
+  \hline
+  & 状態$(x_1, x_2, x_3)$ & 環境$q(\bx)$\\
+  \hline
+  $\bx^0$ & (0,0,0) & 0.1 \\
+  $\bx^1$ & (1,0,0) & 0.1 \\
+  $\bx^2$ & (0,1,0) & 0.05\\
+  $\bx^3$ & (1,1,0) & 0.05\\
+  $\bx^4$ & (0,0,1) & 0.1 \\
+  $\bx^5$ & (1,0,1) & 0.1 \\
+  $\bx^6$ & (0,1,1) & 0.4 \\
+  $\bx^7$ & (1,1,1) & 0.1 \\
+  \hline
+ \end{tabular}
+ \end{center}
+\end{table}
+
+全ての重複順列は
+\begin{eqnarray}
+ \frac{8!}{5!2!1!} &=& 168\\
+\end{eqnarray}
+
+\subsection{並べ方}
+\begin{table}[h]
+ \begin{center}
+ \caption{組み合わせ TOP5}\label{tbl:permutation_top5}
+ \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+  \hline
+  $\bx$ &$\bx^0$&$\bx^1$&$\bx^2$&$\bx^3$&$\bx^4$&$\bx^5$&$\bx^6$&$\bx^7$\\
+  \hline
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  \hline
+ \end{tabular}
+ \end{center}
+ \begin{center}
+ \caption{組み合わせ WORST5}\label{tbl:permutation_worst5}
+ \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+  \hline
+  $\bx$ &$\bx^0$&$\bx^1$&$\bx^2$&$\bx^3$&$\bx^4$&$\bx^5$&$\bx^6$&$\bx^7$\\
+  \hline
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  0.    & 0.    & 0.    &  0.   &  0.   & 0.    &  0.   &  0.   &0.   \\
+  \hline
+ \end{tabular}
+ \end{center}
+\end{table}
+
+
+
+\subsection{実験結果}
+
+\begin{itemize}
+ \item エントロピー
+ \item 一様分布($p_i=0.5$)との類似度
+ \item 一様分布($p_i=0.5$)とのKL情報量
+\end{itemize}
+
+\section{結果}
+168通りの確率分布を並べ替えた結果、{\rm }番目が良い結果となった。
+反対に{\rm }番目は悪い結果となった。
+
+$KL(P||Q)$を計算した結果、
+トップ5番目とワースト5番目のエントピーと類似度に注目しても関連性は見出せなかった。
+
+トップ5番目までとワースト5番目までの$p_i=0.5$の{\rm KL}情報量では、
+ワースト5番までの値の方が小さい値をとることがわかった。
+
+2素子が同時に発火した確率$p_{ij}$が{\rm 0.5}に
+近い値ほど$KL(P||Q)$は大きい値をとり、
+分布の近似が悪くなることがわかった。
+
+\begin{table}[h]
+ \begin{minipage}[t]{.45\textwidth}
+  \begin{center}
+    \caption{top5}\label{tbl:top5}
+    \begin{tabular}{|c|c|}
+     \hline
+     ID  & KL情報量 \\
+     \hline
+     99  & 0.068496\\
+     96  & 0.079556\\
+     119 & 0.082580\\
+     42  & 0.087092\\
+     20  & 0.088058\\
+     \hline
+    \end{tabular}
+  \end{center}
+ \end{minipage}
+ \hfill
+ \begin{minipage}[t]{.45\textwidth}
+  \begin{center}
+    \caption{worst5}\label{tbl:worst5}
+    \begin{tabular}{|c|c|}
+     \hline
+     ID  & KL情報量 \\
+     \hline
+     154 & 0.224369\\
+     133 & 0.224473\\
+     149 & 0.224506\\
+     68  & 0.224859\\
+     36  & 0.225494\\
+     \hline
+    \end{tabular}
+  \end{center}
+ \end{minipage}
+\end{table}
+
+
+\section{モデルが持つ結合行列}
+
+
+
+\end{document}
+
+

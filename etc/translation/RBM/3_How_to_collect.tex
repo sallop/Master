@@ -1,0 +1,140 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+\bmdefine{\bx}{x}
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2009年4月12日\\宮崎花子}
+% \cfoot{}
+%
+%\begin{flushright}%
+%2006年 9月 28日
+%\end{flushright}
+%
+
+\centerline{\Large\gt \LaTeX を使ったレポート作成}      
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+
+\section{How to collect statistics when using Contrastive Divergence} 
+
+まず,全ての可視素子と隠れ素子はバイナリであると仮定しなければならない.
+
+別のタイプの素子については13章で議論されるだろう.
+
+また,学習の目的は訓練ベクトルのセットの良い生成モデルを作るためだとも仮定して
+おく.
+
+{\rm Deep Belief Net}の学習について{\rm RBM}を用いたとき
+
+誤差逆伝播,
+
+生成モデルは究極の物体ではなく,そして,これの足元に保存することができる.
+しかし,ここでは触れないでおく.
+
+\subsection{Updating the hidden states}
+
+隠れ素子はバイナリであり,そして,$CD_1$を用いると仮定する,
+データベクトルによって,それらが駆動するとき
+隠れ素子は確率的なバイナリ状態をとるだろう.
+
+隠れ素子$j$が反転する確率は,それの{\rm total input}
+ロジスティック関数$\sigma(x) = 1/(1 + exp(-x))$を適応して計算することに
+よって
+\begin{eqnarray}
+ p(h_j = 1) = \sigma(b_j + \sum_{i} v_i w_{ij})
+\end{eqnarray}
+
+そして,隠れ素子は,もしこの確率が$0~1$の一様分布より大きいならば依存する.
+
+それら隠れ素子を作成するために重要で,むしろそれら自身の確率が使われる.
+
+
+もし確率が使われたならば,それら隠れ素子は実数値と
+可視素子を復元する間中,コミュニケーションがとれる.
+
+この深刻に乱す情報のボトルネックは
+隠れ素子が多くとも1ビット運ぶことができる事実を作成する.
+
+この情報のボトルネックの活動は強力な正規化とみなせる.
+
+隠れ素子の最後の更新について,確率バイナリ素子の状態を使うことは馬鹿げて
+いる.
+なぜならば,選択される状態に依存するものはない.
+
+だから,不必要なサンプリングノイズを避けるために確率が使われる.
+
+$CD_n$が使われるとき,
+隠れ素子の最終的な更新だけは確率的に使われる必要がある.
+
+\subsection{Updating the visible states}
+可視素子がバイナリだと仮定すると,
+復元を生成するときの可視状態の正しい更新方法は
+トータルでトップダウンの入力によって確率的に決定される1か0を拾い上げるこ
+とで
+
+\begin{eqnarray}
+ p_i = p(v_i = 1) = \sigma(a_i + \sum_j h_j w_{ij} )
+\end{eqnarray}
+
+しかしながら,これは確率$p_i$を使うため普通で,バイナリ値のサンプリングの
+代りに.
+
+これは近くなく
+データ駆動型の隠れ素子の状態について確率として使われ,
+そして,
+これはサンプリングノイズが減り,そして学習の高速化を許す.
+
+これにはいくつかの証拠がある.わずかに悪い密度モデルを導く.(Tijimen
+Tieleman, personal communication, 2008).
+
+{\rm deep belief net}を使うことについて隠れ特徴の層を事前に学習するため
+に{\rm RBM}を使うとき,これは恐らく重要ではない.
+
+\subsection{Collection the statistic needed for learning}
+
+可視素子は確率的なバイナリ値のかわりに実数値の確率を用いると仮定すれば,
+可視素子$i$と隠れ素子$j$の間の結合について正の確率を集める2つの実用的な
+方法が存在する.
+\begin{eqnarray}
+ <p_i h_j>_{data} or <p_i p_j>_{data}
+\end{eqnarray}
+ここで,$p_j$は確率と$h_j$は確率$p_j$のときに1の値をとるバイナリ状態だ.
+
+$h_j$を用いることで,{\rm RBM}の数理モデルは近くなる.
+しかしながら,$p_j$は大抵の場合はサンプリングノイズが少なく
+若干,学習が速くなる.
+
+\subsection{A recipe for getting the learning signal for $CD_1$}
+
+データによって隠れ素子が駆動したとき,確率バイナリ状態が常に使われる.
+それらが再構築によって駆動されているとき,常にサンプリングなしで確率が使
+われる.
+
+可視素子はロジスティック関数を使うと仮定し,データも再構築についても実数
+値の確率が使われる.
+
+学習重みや学習バイアスについての個々の確率についての2つ組の確率を集める
+とき,確率を使い,バイナリ状態を使わず,そして,対称性を崩すためにランダムに
+重みを更新する.
+
+
+
+
+
+
+\end{document}
+
+

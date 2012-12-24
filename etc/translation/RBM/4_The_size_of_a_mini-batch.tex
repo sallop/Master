@@ -1,0 +1,85 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+\bmdefine{\bx}{x}
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2009年4月12日\\宮崎花子}
+% \cfoot{}
+%
+%\begin{flushright}%
+%2006年 9月 28日
+%\end{flushright}
+%
+
+\centerline{\Large\gt \LaTeX を使ったレポート作成}      
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+
+\section{The size of mini-batch} 
+
+
+シングル訓練の場合では勾配を推定した後で重みを更新することができる.
+しかし,訓練セットを10から100の場合の小さな'mini-batches'に分割することで,
+しばしば一層に効果的になる.
+
+これは,MatlabやGPU boards上のとても先進的な機能で
+行列-行列の層に使うこと許す.
+
+
+
+
+
+ミニバッチのサイズが変更したときに,学習率の変化を避けるためには,
+ミニバッチのサイズによって,ミニバッチ上の全ての勾配を計算される
+役立つ.
+
+だから,学習率について話しをするとき,
+平均の掛け算,ミニバッチ上の1ケース当りの勾配,
+
+ミニバッチについてトータルの勾配ではない.
+
+
+
+確率的な勾配降下を用いるとき,
+大きすぎるミニバッチを作成することは深刻な誤りだ.
+
+{\rm N}の要因によってミニバッチのサイズを増加はより信頼できる勾配推定を
+導くことができるが,要因{\rm N}によって最大安定学習率を増加させることはで
+きず,
+だから,網の影響は重みの更新は勾配計算により小さいといえる.
+
+
+
+
+\subsection{A recipe for dividing the training set into mini-batches}
+
+蓋然性の数が小さい場合を含むデータセットについて,理想的なミニバッチのサ
+イズはしばしばクラスの数と等しく,
+そして,それぞれのミニバッチには.
+
+これは,行列×行列の掛け算をするのに使われる
+{\rm GPU}ボード上や{\rm Matlab}内での有利な
+
+
+
+他のデータベースについて,
+
+
+
+
+\end{document}
+
+

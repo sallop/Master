@@ -1,0 +1,166 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+
+\bmdefine{\bx}{x}
+\bmdefine{\bW}{W}
+\bmdefine{\ba}{a}
+\bmdefine{\bb}{b}
+
+\makeatletter
+\newcommand{\figcaption}[1]{\def\@captype{figure}\caption{#1}}
+\newcommand{\tblcaption}[1]{\def\@captype{table}\caption{#1}}
+\makeatother
+
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2009年4月12日\\塩貝亮宇}
+
+\centerline{\Large\gt}
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+\section{重み付き和}
+\begin{eqnarray}
+ \bW 
+  &=&
+  \left(
+   \begin{array}{cccc}
+    W_{00} & W_{01} & W_{02} & W_{03} \\
+    W_{10} & W_{11} & W_{12} & W_{13} \\
+    W_{20} & W_{21} & W_{22} & W_{23} \\
+    W_{30} & W_{31} & W_{32} & W_{33} \\
+   \end{array}
+  \right)\\
+ &=& 
+  \left(
+   \begin{array}{cccc}
+    0      & W_{01} & W_{02} & W_{03} \\
+    W_{01} &     0  & W_{12} & W_{13} \\
+    W_{02} & W_{12} &     0  & W_{23} \\
+    W_{03} & W_{13} & W_{23} &      0 \\
+   \end{array}
+ \right)\\
+  &=& 
+  \left(
+   \begin{array}{cccc}
+    0     & a_{1}  & a_{2}  & a_{3} \\
+    a_{1} &     0  & W_{12} & W_{13}\\
+    a_{2} & W_{12} &     0  & W_{23}\\
+    a_{3} & W_{13} & W_{23} &      0\\
+   \end{array}
+ \right)
+\end{eqnarray}
+
+\begin{table}[htbp]
+ \begin{center}
+  \begin{tabular}{cc}
+   \begin{minipage}{0.4\hsize}
+    \begin{tabular}{|c||c|c|c|c|}
+     \hline
+     (i,j) & 0  & 1  & 2  & 3 \\
+     \hline
+     \hline
+     0   & 00 & 01 & 02 & 03\\
+     \hline
+     1   & 10 & 11 & 12 & 13\\
+     \hline
+     2   & 20 & 21 & 22 & 23\\
+     \hline
+     3   & 30 & 31 & 32 & 33\\
+     \hline
+    \end{tabular}
+   \end{minipage}
+   \begin{minipage}{0.4\hsize}
+    \begin{tabular}{|c||c|c|c|c|}
+     \hline
+     (i,j) &   0   &   1   &   2   &   3  \\
+     \hline
+     \hline
+     0  & $i=j$ & $i<j$ & $i<j$ & $i<j$\\
+     \hline
+     1  & $i>j$ & $i=j$ & $i<j$ & $i<j$\\
+     \hline
+     2  & $i>j$ & $i>j$ & $i=j$ & $i<j$\\
+     \hline
+     3  & $i>j$ & $i>j$ & $i>j$ & $i=j$\\
+     \hline
+    \end{tabular}
+   \end{minipage}
+  \end{tabular}
+ \end{center}
+\end{table}
+
+\begin{eqnarray}
+ \begin{array}{cccc}
+  \sum_{i=0}^{3} \sum_{j=i+1}^{3} W_{ij} x_i x_j & = W_{01} x_0 x_1 & + W_{02} x_0 x_2 & + W_{03} x_0 x_3\\
+                                                 &                  & + W_{12} x_1 x_2 & + W_{13} x_1 x_3\\
+                                                 &                  &                  & + W_{23} x_2 x_3\\
+                                                 & = a_{1} x_0 x_1  & + a_{ 2} x_0 x_2 & + a_{3} x_0 x_3\\
+                                                 &                  & + W_{12} x_1 x_2 & + W_{13} x_1 x_3\\
+                                                 &                  &                  & + W_{23} x_2 x_3\\
+                                                 & = a_{1}      x_1 & + a_{ 2}     x_2 & + a_{3}      x_3\\
+                                                 &                  & + W_{12} x_1 x_2 & + W_{13} x_1 x_3\\
+                                                 &                  &                  & + W_{23} x_2 x_3
+ \end{array}\\
+ = \sum_{j=1}^{3} a_j x_j + \sum_{i=1}^{3} \sum_{j=i+1} W_{ij} x_i x_j
+\end{eqnarray}
+
+
+
+\newpage
+
+\section{バイアス項の分離} 
+\begin{eqnarray}
+ \sum_{i=0}^{D} \sum_{j=i+1}^{D} x_{i} W_{ij} x_{j}
+  &=&
+  \sum_{j=1}^{D} W_{0j} x_{j}         +
+  \sum_{i=0  }^{D}
+  \sum_{j=i+1}^{D} x_{i} W_{ij} x_{j}\\
+ &=&
+  \sum_{j=1}^{D} a_{j} x_{j}                       +
+  \sum_{i=1}^{D} \sum_{j=i+1}^{D} x_{i} W_{ij} x_{j}\\
+\end{eqnarray}
+
+\section{神経回路の更新則}
+元となる神経回路網の更新則は
+\begin{eqnarray}
+ W_{ij}(t+1) &=& W_{ij}(t) + \Delta W_{ij}(t)\\
+\end{eqnarray}
+
+ここで$W_{0j}$はバイアス項であり,その更新則は
+\begin{eqnarray}
+ \Delta W_{0j} &=& \epsilon (x_0       x_j - \hat x_0   \hat x_j)\\
+               &=& \epsilon (  1 \cdot x_j -  1   \cdot \hat x_j)\\
+               &=& \epsilon (          x_j -            \hat x_j)
+		\label{eq:DeltaW}
+\end{eqnarray}
+となっている.
+
+式(\ref{eq:DeltaW})において,
+$x_j$は環境から入力されるパターン$\bx$の素子$j$番目の発火確率$p(x_j =1)$,
+$\hat x_j$は回路$\bx$を自由に走らせたとき$j$番目の
+発火確率$p(\hat x_j =1)$を表わしている.
+
+したがって、バイアス項$\ba$についての更新則は式(\ref{eq:DeltaW})より、
+\begin{eqnarray}
+ \Delta a_{j}  &=& \epsilon (x_j - \hat x_j)\\
+\end{eqnarray}
+で表わされる.
+
+
+
+
+
+\end{document}

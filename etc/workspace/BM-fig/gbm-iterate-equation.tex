@@ -1,0 +1,199 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+\bmdefine{\bx}{x}
+\bmdefine{\bv}{v}
+\bmdefine{\bh}{h}
+\makeatletter
+\newcommand{\figcaption}[1]{\def\@captype{figure}\caption{#1}}
+\newcommand{\tblcaption}[1]{\def\@captype{table}\caption{#1}}
+\makeatother
+
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2009年4月12日\\塩貝亮宇}
+% \cfoot{}
+%
+%\begin{flushright}%
+%2006年 9月 28日
+%\end{flushright}
+%
+
+\centerline{\Large\gt GBM}
+
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+\section{GBM}
+\begin{eqnarray}
+ \sigma(x) &=& \frac{1}{1 + \exp(-x)}\\
+\end{eqnarray}
+\subsection{GBMBiasIterate}
+\begin{eqnarray}
+ E(\bv,\bh) &=&
+  -\sum_{i=1}^{D} a_i v_i -\sum_{j=1}^{P} b_j h_j\\
+ &+&\sum_{i=1}^{D} \sum_{k=i+1}^{D} v_i L_{ik} v_k
+  +\sum_{j=1}^{P} \sum_{j=i+1}^{P} h_j J_{jm} h_m
+  +\sum_{i=1}^{D} \sum_{j=1}^{P}   v_i W_{ij} h_j\\
+ \mu_j &\leftarrow&
+  \sigma(
+  -  b_j
+  + \sum_{i=1}^{D} v_i W_{ij}
+  + \sum_{m=1\backslash j}^{P} \mu_m J_{mj}
+  )\\
+ p(h_j=1 | \bv, \bh_{-j}) &=&
+  \sigma(
+  - b_j + \sum_{m=1\backslash j}^{P} J_{jm} h_m
+  )\\
+ p(v_i=1 | \bh, \bv_{-i}) &=&
+  \sigma(
+  - a_i
+  + \sum_{j=1}^{P} W_{ij} h_j 
+  + \sum_{k=1}^{D} L_{ik} v_k
+  )\\
+\end{eqnarray}
+
+\subsection{GBMNoBiasIterate}
+\begin{eqnarray}
+ E(\bv, \bh) &=&
+   \sum_{i=1}^{D} \sum_{k=i+1}^{D} v_i L_{ik} v_k
+  +\sum_{j=1}^{P} \sum_{j=i+1}^{P} h_j J_{jm} h_m
+  +\sum_{i=1}^{D} \sum_{j=1}^{P}   v_i W_{ij} h_j\\
+ \mu_j &\leftarrow&
+  \sigma \left(
+	   \sum_{i=1}^{D}               v_i W_{ij}
+	  +\sum_{m=1\backslash j}^{P} \mu_m J_{mj}
+	 \right)\\
+ p(h_j=1| \bv, \bh_{-j}) &=&
+  \sigma \left(
+  \sum_{i=1}^{D} v_i W_{ij}
+  + \sum_{m=1\backslash j}^{P} J_{jm} h_m
+  \right)\\
+ p(v_i=1| \bh, \bv_{-i}) &=&
+  \sigma \left(
+    \sum_{j=1}^{P} W_{ij} h_j
+  + \sum_{k=1\backslash i}^{D} L_{ik} v_k
+  \right)\\
+\end{eqnarray}
+
+\subsection{GBMNoBiasNoIterate}
+\begin{eqnarray}
+ E(\bv,\bh) &=&
+  -\sum_{i=1}^{D} \sum_{k=i+1}^{D} v_i L_{ik} v_k
+  -\sum_{j=1}^{P} \sum_{m=j+1}^{P} h_j J_{jm} h_m
+  -\sum_{i=1}^{D} \sum_{j=1  }^{P} v_i W_{ij} h_j\\
+ \mu_j &\leftarrow&
+  \sigma(
+   \sum_{i=1            }^{D} v_i    W_{ij}
+  +\sum_{m=1\backslash j}^{P} J_{mj} \mu_j
+  )\\
+ p(h_j=1 | \bv, \bh_{-j})  &=&
+    \sum_{i=1            }^{D} v_i W_{ij}
+  + \sum_{m=1\backslash j}^{P} h_j J_{jm}\\
+ p(v_i=1 | \bh, \bv_{-i}) &=&
+   \sum_{j=1}^{P} W_{ij} h_j
+  +\sum_{k=1\backslash i}^{D} v_i L_{ik} 
+\end{eqnarray}
+
+\subsection{GBMBiasIterate}
+\begin{eqnarray}
+ E(\bv,\bh)
+ &=& \sum_{i}^{D} a_i v_i +\sum_{j}^{P} b_j h_j\\
+ &-& \sum_{i=1}^{D}\sum_{k=i+1}^{D} v_i L_{ik} v_k
+  -  \sum_{j=1}^{P}\sum_{m=j+1}^{P} h_j J_{jm} h_m
+  -  \sum_{i=1}^{D}\sum_{j=1}^{P} v_i W_{ij} h_j\\
+ \mu_j &\leftarrow&
+  \sigma(
+  b_j 
+  + \sum_{i=1            }^{D} v_i W_{ij}
+  + \sum_{m=1\backslash j}^{P} \mu_m J_{mj}
+  )\\
+ p(h_j=1 | \bv, \bh_{-j}) &=&
+  \sigma(
+  b_j
+  +\sum_{i=1            }^{D} v_i W_{ij}
+  +\sum_{m=1\backslash j}^{P} J_{jm} h_m
+  )\\
+ p(v_i=1 |\bh, \bv_{-i}) &=&
+  \sigma(
+  a_i
+  +\sum_{j=1            }^{P} W_{ij} h_j
+  +\sum_{k=1\backslash i}^{D} L_{ik} v_k
+  )\\
+\end{eqnarray}
+
+\subsection{GBMBiasIterate2}
+\begin{eqnarray}
+ E(\bv,\bh)
+  &=& \sum_{i=1}^{D} a_i v_i +\sum_{j=1}^{P} b_j h_j\\
+  &-&\sum_{i=1}^{D}\sum_{k=i+1}^{D} v_i L_{ik} v_k
+   - \sum_{j=1}^{P}\sum_{m=j+1}^{P} h_j J_{jm} h_m
+   - \sum_{i=1}^{D}\sum_{j=1  }^{P} v_i W_{ij} h_j\\
+ \mu_j &\leftarrow& 
+  \sigma \left(
+	  b_j 
+ + \sum_{i=1}^{D} a_i v_i
+ + \sum_{i=1            }^{D} v_i W_{ij}
+ + \sum_{m=1\backslash j}^{P} \mu_m J_{mj}
+ \right)\\
+ p(h_j=1 | \bv, \bh_{-j}) &=&
+  \sigma \left(
+    b_j
+  +\sum_{i=1}^{D} a_i v_i
+  +\sum_{i=1            }^{D} v_i W_{ij}
+  +\sum_{m=1\backslash j}^{P} J_{jm} h_m
+  \right)\\
+ p(v_i=1 |\bh, \bv_{-i}) &=&
+  \sigma \left(
+  a_i
+  +\sum_{j=1}^{P} b_j h_j
+  +\sum_{j=1            }^{P} W_{ij} h_j
+  +\sum_{k=1\backslash i}^{D} L_{ik} v_k
+  \right)\\
+\end{eqnarray}
+
+\subsection{GBMBiasIterate3}
+\begin{eqnarray}
+ E(\bv,\bh)
+  &=& \sum_{i}^{D} a_i v_i +\sum_{j}^{P} b_j h_j\\
+  &-& \sum_{i=1}^{D}\sum_{k=i+1}^{D} v_i L_{ik} v_k
+   -  \sum_{j=1}^{P}\sum_{m=j+1}^{P} h_j J_{jm} h_m
+   -  \sum_{i=1}^{D}\sum_{j=1}^{P} v_i W_{ij} h_j\\
+ \mu_j &\leftarrow&
+ \sigma \left(
+   \sum_{i=1}^{D} a_i v_i
+ + \sum_{m=1}^{P} b_m h_m
+ + \sum_{i=1            }^{D}  v_i W_{ij}
+ + \sum_{m=1\backslash j}^{P}\mu_m J_{mj}
+ \right)\\
+ p(h_j=1 | \bv, \bh_{-j}) &=&
+  \sigma \left(
+   \sum_{i=1}^{D} a_i v_i
+  +\sum_{m=1}^{P} b_m h_m
+  +\sum_{i=1            }^{D} v_i W_{ij}
+  +\sum_{m=1\backslash j}^{P} J_{jm} h_m
+  \right)\\
+ p(v_i=1 |\bh, \bv_{-i}) &=&
+  \sigma \left(
+   \sum_{k=1}^{D} a_k v_k
+  +\sum_{j=1}^{P} b_j h_j
+  +\sum_{j=1            }^{P} W_{ij} h_j
+  +\sum_{k=1\backslash i}^{D} L_{ik} v_k
+  \right)\\
+\end{eqnarray}
+
+
+\end{document}
+
+

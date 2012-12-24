@@ -1,0 +1,177 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BUFSZ	fbm_view.cc	3;"	d	file:
+DENAME	energy_cmp.cc	19;"	d	file:
+FBM_H_	FBM.hh	2;"	d
+KLd	FBM.cc	/^double KLd(Probability& p, Probability& q)$/;"	f
+KLd	FBMbias.cc	/^double KLd(Probability& p, Probability& q)$/;"	f
+Layer	FBM.hh	/^typedef ub::matrix<UnitType> Layer  ;$/;"	t
+Layer	FBMbias.cc	/^typedef boost::numeric::ublas::matrix<UnitType> Layer  ;$/;"	t	file:
+Layer	trace.cc	/^typedef boost::numeric::ublas::matrix<UnitType> Layer  ;$/;"	t	file:
+LayerCol	FBM.hh	/^typedef ub::matrix_column<Layer> LayerCol;$/;"	t
+LayerCol	FBMbias.cc	/^typedef boost::numeric::ublas::matrix_column<Layer> LayerCol;$/;"	t	file:
+LayerCol	trace.cc	/^typedef boost::numeric::ublas::matrix_column<Layer> LayerCol;$/;"	t	file:
+LayerRow	FBM.hh	/^typedef ub::matrix_row   <Layer> LayerRow;$/;"	t
+LayerRow	FBMbias.cc	/^typedef boost::numeric::ublas::matrix_row   <Layer> LayerRow;$/;"	t	file:
+LayerRow	trace.cc	/^typedef boost::numeric::ublas::matrix_row   <Layer> LayerRow;$/;"	t	file:
+OFFBIT	FBM.hh	37;"	d
+OFFBIT	FBMbias.cc	31;"	d	file:
+OFFBIT	trace.cc	31;"	d	file:
+ONBIT	FBM.hh	36;"	d
+ONBIT	FBMbias.cc	30;"	d	file:
+ONBIT	trace.cc	30;"	d	file:
+Pattern	FBM.hh	/^typedef ub::vector<UnitType> Pattern;$/;"	t
+Pattern	FBMbias.cc	/^typedef boost::numeric::ublas::vector<UnitType> Pattern;$/;"	t	file:
+Pattern	trace.cc	/^typedef boost::numeric::ublas::vector<UnitType> Pattern;$/;"	t	file:
+Patterns	FBM.hh	/^typedef ub::vector<Pattern>  Patterns;$/;"	t
+Patterns	FBMbias.cc	/^typedef boost::numeric::ublas::vector<Pattern>  Patterns;$/;"	t	file:
+Patterns	trace.cc	/^typedef boost::numeric::ublas::vector<Pattern>  Patterns;$/;"	t	file:
+PlotRecord	FBM.hh	/^typedef std::pair<const char*, std::fstream*> PlotRecord;$/;"	t
+PlotTable	FBM.hh	/^typedef std::map <const char*, std::fstream*> PlotTable ;$/;"	t
+Probability	FBM.hh	/^typedef ub::vector<double> Probability;$/;"	t
+Probability	FBMbias.cc	/^typedef boost::numeric::ublas::vector<double> Probability;$/;"	t	file:
+Probability	trace.cc	/^typedef boost::numeric::ublas::vector<double> Probability;$/;"	t	file:
+SETW	FBM.hh	38;"	d
+Threshold	FBM.hh	/^typedef ub::vector<double> Threshold;$/;"	t
+Threshold	FBMbias.cc	/^typedef boost::numeric::ublas::vector<double> Threshold;$/;"	t	file:
+Threshold	trace.cc	/^typedef boost::numeric::ublas::vector<double> Threshold;$/;"	t	file:
+UnitType	FBM.hh	/^typedef double UnitType;$/;"	t
+UnitType	FBMbias.cc	/^typedef double UnitType;$/;"	t	file:
+UnitType	trace.cc	/^typedef double UnitType;$/;"	t	file:
+_D	FBM.cc	378;"	d	file:
+_D	FBM.cc	381;"	d	file:
+__C	FBM.cc	365;"	d	file:
+__C	FBM.cc	371;"	d	file:
+__D	FBM.cc	368;"	d	file:
+__D	FBM.cc	372;"	d	file:
+_annealing_schedule0	FBM.cc	/^double _annealing_schedule0(double time)$/;"	f
+_annealing_schedule1	FBM.cc	/^double _annealing_schedule1(double time)$/;"	f
+_annealing_schedule2	FBM.cc	/^double _annealing_schedule2(double time)$/;"	f
+_annealing_schedule3	FBM.cc	/^double _annealing_schedule3(double time)$/;"	f
+_denergy0	FBM.cc	/^double _denergy0(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy02	energy_cmp.cc	/^double _denergy02(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy02_verb	energy_cmp.cc	/^double _denergy02_verb(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy0_verb	energy_cmp.cc	/^double _denergy0_verb(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy1	FBM.cc	/^double _denergy1(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy2	FBM.cc	/^double _denergy2(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy3	FBM.cc	/^double _denergy3(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy4	FBM.cc	/^double _denergy4(size_t i, Pattern& v, Layer& L)$/;"	f
+_denergy4_verb	energy_cmp.cc	/^double _denergy4_verb(size_t i, Pattern& v, Layer& L)$/;"	f
+_energy0	FBM.cc	/^double _energy0(Pattern& v, Layer& L)$/;"	f
+_energy1	FBM.cc	/^double _energy1(Pattern& v, Layer& L)$/;"	f
+_energy10	FBM.cc	/^double _energy10(Pattern& v, Layer& L)$/;"	f
+_energy2	FBM.cc	/^double _energy2(Pattern& v, Layer& L)$/;"	f
+_energy3	FBM.cc	/^double _energy3(Pattern& v, Layer& L)$/;"	f
+_energy4	FBM.cc	/^double _energy4(Pattern& v, Layer& L)$/;"	f
+_energy5	FBM.cc	/^double _energy5(Pattern& v, Layer& L)$/;"	f
+_energy6	FBM.cc	/^double _energy6(Pattern& v, Layer& L)$/;"	f
+_energy7	FBM.cc	/^double _energy7(Pattern& v, Layer& L)$/;"	f
+_energy8	FBM.cc	/^double _energy8(Pattern& v, Layer& L)$/;"	f
+_energy9	FBM.cc	/^double _energy9(Pattern& v, Layer& L)$/;"	f
+_eq	FBM.hh	40;"	d
+_p	FBM.hh	42;"	d
+_prop0	FBM.cc	/^double _prop0(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+_prop1	FBM.cc	/^double _prop1(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+_prop2	FBM.cc	/^double _prop2(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+_prop3	FBM.cc	/^double _prop3(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+_prop4	FBM.cc	/^double _prop4(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+annealing_ptr	FBM.hh	/^typedef double (*annealing_ptr)(double temperature);$/;"	t
+annealing_schedule	FBM.cc	/^double annealing_schedule(double time)$/;"	f
+banded_view	FBM.hh	/^typedef ub::banded_adaptor<Layer> banded_view;$/;"	t
+boltzmann_distribution	FBM.cc	/^double boltzmann_distribution(Pattern& v,Layer& L, Patterns& all_v)$/;"	f
+boltzmann_distribution	FBMbias.cc	/^double boltzmann_distribution(Pattern& v,Layer& L, Patterns& all_v)$/;"	f
+btod	FBM.cc	/^int btod(const Pattern& x)$/;"	f
+btod	FBMbias.cc	/^int btod(const Pattern& x)$/;"	f
+btod_date	energy_cmp.cc	/^int btod_date(const Pattern& x)$/;"	f
+config_table	plot_kl.cc	/^typedef map<string,strings> config_table;$/;"	t	file:
+cook_args	FBM.cc	/^void cook_args(int argc, char **argv,$/;"	f
+denergy	FBM.cc	/^double denergy(size_t i, Pattern &v, Layer &L)$/;"	f
+denergy	date_main.cc	/^double denergy(size_t i, Pattern &v, Layer &L)$/;"	f
+denergy_ptr	FBM.hh	/^typedef double (*denergy_ptr)(size_t i, Pattern& s, Layer& W);$/;"	t
+denergy_test	FBM.cc	/^double denergy_test(size_t i, Pattern& v, Layer& L,$/;"	f
+dmatrix	ubtest.cc	/^typedef matrix<double> dmatrix;$/;"	t	file:
+dtob	FBM.cc	/^Pattern dtob(int n, size_t size)$/;"	f
+dtob	FBMbias.cc	/^Pattern dtob(int n, size_t size)$/;"	f
+dtob	partition_func.cc	/^void dtob(dvector& v, int n)$/;"	f
+dtob_date	energy_cmp.cc	/^Pattern dtob_date(int n, size_t size)$/;"	f
+dvector	partition_func.cc	/^typedef vector<double> dvector;$/;"	t	file:
+dvector	ubtest.cc	/^typedef vector<double> dvector;$/;"	t	file:
+dvectors	partition_func.cc	/^typedef vector<double> dvectors;$/;"	t	file:
+energy	FBM.cc	/^double energy(Pattern& v, Layer& L)$/;"	f
+energy	FBMbias.cc	/^double energy(Pattern& v, Layer& L)$/;"	f
+energy	date_main.cc	/^double energy(Pattern &v, Layer &L)$/;"	f
+energy_ptr	FBM.hh	/^typedef double (*energy_ptr)(Pattern& s, Layer& W);$/;"	t
+energy_test	FBM.cc	/^double energy_test(Pattern& v, Layer& L, std::ostream &os=std::cout)$/;"	f
+finalize_plot_table	FBM.cc	/^void finalize_plot_table()$/;"	f
+fvector	next_permutation.cc	/^typedef std::vector<double> fvector;$/;"	t	file:
+g_annealing_schedule_idx	FBM.cc	/^size_t g_annealing_schedule_idx;$/;"	v
+g_annealing_schedule_tbl	FBM.cc	/^annealing_ptr g_annealing_schedule_tbl[]={$/;"	v
+g_denergy_idx	FBM.cc	/^size_t g_denergy_idx;$/;"	v
+g_denergy_idx	date_main.cc	/^size_t g_denergy_idx = 0;$/;"	v
+g_denergy_tbl	FBM.cc	/^denergy_ptr g_denergy_tbl[]= {$/;"	v
+g_energy_idx	FBM.cc	/^size_t g_energy_idx ;$/;"	v
+g_energy_idx	date_main.cc	/^size_t g_energy_idx  = 0;$/;"	v
+g_energy_tbl	FBM.cc	/^energy_ptr g_energy_tbl[]={$/;"	v
+g_plot_table	FBM.cc	/^PlotTable g_plot_table;$/;"	v
+g_prop_idx	FBM.cc	/^size_t g_prop_idx   ;$/;"	v
+g_prop_idx	date_main.cc	/^size_t g_prop_idx    = -1;	\/\/ not use$/;"	v
+g_prop_tbl	FBM.cc	/^prop_ptr g_prop_tbl[] = {_prop0,_prop1,_prop2,_prop3,_prop4,};$/;"	v
+generator_ptr	FBM.hh	/^typedef double (*generator_ptr)();$/;"	t
+init_plot_table	FBM.cc	/^void init_plot_table(char *dir, char *prefix,$/;"	f
+initial_state	FBM.cc	/^void initial_state(char *cfg, Layer &L)$/;"	f
+ivector	next_permutation.cc	/^typedef std::vector<int> ivector;$/;"	t	file:
+kstep_gibbs	FBM.cc	/^inline void kstep_gibbs(size_t K, Pattern& v, Layer& L, double temperature)$/;"	f
+kstep_gibbs	FBMbias.cc	/^inline void kstep_gibbs(size_t K, Pattern& v, Layer& L, double temperature)$/;"	f
+main	FBMbias.cc	/^int main(int argc, char **argv)$/;"	f
+main	date_main.cc	/^int main(int argc, char **argv)$/;"	f
+main	energy_cmp.cc	/^int main(int argc, char* argv[])$/;"	f
+main	fbm_view.cc	/^int main(int argc, char *argv[])$/;"	f
+main	kurata2_main.cc	/^int main(int argc, char **argv)$/;"	f
+main	kurata3_main.cc	/^int main(int argc, char **argv)$/;"	f
+main	kurata_main.cc	/^int main(int argc, char **argv)$/;"	f
+main	neural_field.cc	/^int main(int argc, char *argv[])$/;"	f
+main	next_permutation.cc	/^int main()$/;"	f
+main	partition_func.cc	/^int main()$/;"	f
+main	plot_kl.cc	/^int main(int argc, char *argv[])$/;"	f
+main	trace.cc	/^int main(int argc, char **argv)$/;"	f
+main	ubtest.cc	/^int main()$/;"	f
+main	v.cc	/^int main()$/;"	f
+partition_function	FBM.cc	/^double partition_function(Layer& L, Patterns& all_v)$/;"	f
+partition_function	FBMbias.cc	/^double partition_function(Layer& L, Patterns& all_v)$/;"	f
+pmat	FBM.hh	/^void pmat(T& m, std::ostream& os = std::cout)$/;"	f
+pmat	FBMbias.cc	/^void pmat(T& m)$/;"	f
+pmat	trace.cc	/^void pmat(T& m)$/;"	f
+pprobability	FBM.cc	/^void pprobability(Probability& Pr, std::ostream& os=std::cout)$/;"	f
+print	FBMbias.cc	/^void print(Layer& W)$/;"	f
+print	ubtest.cc	/^void print(T& m)$/;"	f
+prop	FBM.cc	/^double prop(int i, Pattern &v, Layer &L, double temperature)$/;"	f
+prop	FBMbias.cc	/^inline double prop(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+prop	date_main.cc	/^double prop(int i, Pattern& v, Layer& L, double temperature)$/;"	f
+prop	ubtest.cc	/^double prop(int i, dvector& v, dmatrix& L)$/;"	f
+prop_ptr	FBM.hh	/^typedef double (*prop_ptr)(int i, Pattern& s, Layer& W, double temperature);$/;"	t
+prop_test	FBM.cc	/^double prop_test(int i, Pattern& v, Layer& L,$/;"	f
+pvec	FBM.cc	/^void pvec(Pattern v, std::ostream& os = std::cout)$/;"	f
+read_cfg	plot_kl.cc	/^void read_cfg(const char* fname, map<string,strings>& tbl)$/;"	f
+read_param	plot_kl.cc	/^string read_param(const string& line, string param)$/;"	f
+read_t_gibbs	plot_kl.cc	/^void read_t_gibbs(char *buf, size_t size, int &t, Probability &prob)$/;"	f
+restp	energy_cmp.cc	29;"	d	file:
+set_boltzmann_neural_field	neural_field.cc	/^void set_boltzmann_neural_field(Layer &W,int n, int k, double r)$/;"	f
+sigma	FBM.cc	/^double sigma(double x){return 1.\/(1+exp(-x));}$/;"	f
+sigma	FBMbias.cc	/^double sigma(double x)$/;"	f
+strings	plot_kl.cc	/^typedef vector<string> strings;$/;"	t	file:
+symcfg	FBM.cc	/^void symcfg(int D,int P,int K,int M,int N,int T,$/;"	f
+symmetric_view	FBM.hh	/^typedef ub::symmetric_adaptor<Layer,ub::lower> symmetric_view;$/;"	t
+trace	FBM.cc	/^inline double trace(Layer& W)$/;"	f
+trace	trace.cc	/^double trace(Layer& W)$/;"	f
+trim	plot_kl.cc	/^string& trim(string& s, const char* t=" \\t\\n\\r\\f\\v")$/;"	f
+verb	energy_cmp.cc	22;"	d	file:
+zerom	FBM.hh	/^typedef ub::zero_matrix<UnitType> zerom;$/;"	t
+zerom	FBMbias.cc	/^typedef boost::numeric::ublas::zero_matrix<UnitType> zerom;$/;"	t	file:
+zerom	trace.cc	/^typedef boost::numeric::ublas::zero_matrix<UnitType> zerom;$/;"	t	file:
+zerov	FBM.hh	/^typedef ub::zero_vector<UnitType> zerov;$/;"	t
+zerov	FBMbias.cc	/^typedef boost::numeric::ublas::zero_vector<UnitType> zerov;$/;"	t	file:
+zerov	trace.cc	/^typedef boost::numeric::ublas::zero_vector<UnitType> zerov;$/;"	t	file:

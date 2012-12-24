@@ -1,0 +1,68 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+
+\bmdefine{\bx}{x}
+\bmdefine{\bW}{W}
+\bmdefine{\ba}{a}
+\bmdefine{\bb}{b}
+
+\makeatletter
+\newcommand{\figcaption}[1]{\def\@captype{figure}\caption{#1}}
+\newcommand{\tblcaption}[1]{\def\@captype{table}\caption{#1}}
+\makeatother
+
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2009年4月12日\\塩貝亮宇}
+
+\centerline{\Large\gt}
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+\section{バイアス項の分離} 
+
+\begin{eqnarray}
+ \sum_{i=0}^{D} \sum_{j=0}^{D} x_{i} W_{ij} x_{j}
+  &=&
+  \sum_{i=1}^{D} \sum_{j=1}^{D} x_{i} W_{ij} x_{j} + \sum_{i=0}^{D} W_{0i} x_{i}
+  &=&
+  \sum_{i=1}^{D} \sum_{j=1}^{D} x_{i} W_{ij} x_{j} + \sum_{i=0}^{D} a_{i} x_{i}
+\end{eqnarray}
+
+\begin{eqnarray}
+ \Delta w_{0j} &=& \epsilon (x_0       x_j - \hat x_0   \hat x_j)\\
+               &=& \epsilon (  1 \cdot x_j -  1   \cdot \hat x_j)\\
+               &=& \epsilon (          x_j -            \hat x_j)
+\end{eqnarray}
+
+$x_j$は環境から得られたパターン$\bx$の
+素子$j$番目が発火している確率$p(x_j = 1)$
+
+$\hat x_j$は回路網$\bx$を自由に走らせたときに
+素子$j$番目が発火している確率$\hat p(x_j = 1)$
+
+バイアス項$\ba = \left(w_{01}, \ldots, w_{0D} \right)$は
+神経素子が発火した確率$p(x_i=1)$であり,
+\begin{eqnarray}
+ \Delta a_j &=& \epsilon( x_j - \hat x_j)\\
+\end{eqnarray}
+
+バイアス項$\ba$をのぞく神経回路網の
+結合重み$W_{ij}$は$x_i$と$x_j$が同時に発火した確率となっている.
+
+
+
+
+\end{document}

@@ -1,0 +1,298 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin = 0mm
+\oddsidemargin = 5mm
+\textwidth = 152mm
+\textheight = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+\bmdefine{\bW}{W}
+\bmdefine{\bJ}{J}
+\bmdefine{\bL}{L}
+\bmdefine{\bx}{x}
+\bmdefine{\bv}{v}
+\makeatletter
+\newcommand{\figcaption}[1]{\def\@captype{figure}\caption{#1}}
+\newcommand{\tblcaption}[1]{\def\@captype{table}\caption{#1}}
+\makeatother
+
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2011年12月1日\\塩貝亮宇}
+% \cfoot{}
+%
+%\begin{flushright}%
+%2006年 9月 28日
+%\end{flushright}
+%
+
+\centerline{\Large\gt 進捗状況}
+
+\vskip 5mm
+\centerline{\Large\gt T1076006 塩貝亮宇}
+
+\section{目的} 
+\begin{itemize}
+ \item 極小値となる前世代$t_{down}$,
+ \item 極小値となる世代 $t_{local}$,
+ \item 極小値から上昇しだす世代$t_{up}$,
+\end{itemize}
+の各々について、
+\subsection{エネルギー関数}
+エネルギー関数$E(\bv;\bL)$を描く(2次元)
+\begin{itemize}
+ \item $\bL$
+ \item $E_{P_{model}}\left[\cdot\right]$
+ \item $E_{P_{data }}\left[\cdot\right]$
+       \begin{itemize}
+	\item 対角化する
+	\item 対角化しない
+       \end{itemize}
+\end{itemize}
+
+
+$3\times 2 = 6$通り。
+
+
+\subsection{ボルツマン分布}
+ボルツマン分布$P(\bv;\bL)$を描く。
+\begin{itemize}
+ \item $\bL$
+ \item $E_{P_{model}}\left[\cdot\right]$
+ \item $E_{P_{data }}\left[\cdot\right]$
+ \begin{itemize}
+  \item 対角化する
+  \item 対角化しない
+ \end{itemize}
+\end{itemize}
+
+
+$3\times 2=6$通り。
+
+\subsection{gibbs sampling}
+
+\begin{itemize}
+ \item $\bL$
+ \item $E_{P_{model}}\left[\cdot\right]$
+ \item $E_{P_{data }}\left[\cdot\right]$
+       \begin{itemize}
+	\item 対角化する
+	\item 対角化しない
+       \end{itemize}
+\end{itemize}
+
+
+$3\times 2 = 18$通り。
+
+
+
+\section{メモ}
+
+\begin{itemize}
+ \item KL情報量が
+       \begin{itemize}
+	\item 極小値となる前の時刻$t_{down}$
+	\item 極小値の$t_{local}$
+	\item 極小値から外れて上昇しだす$t_{up}$
+       \end{itemize}
+       3つの時刻において
+       \begin{itemize}
+	\item $\bL$,
+	\item $E_{P_{data }}\left[\cdot\right]$,
+	\item $E_{P_{model}}\left[\cdot\right]$
+       \end{itemize}
+       の値をファイルへ保存(保存するパラメータは対角化しないでおく)
+       これを{\rm pylab}で料理していく
+ \item {\rm pylab}で
+       \begin{itemize}
+	\item エネルギー関数$E(\bv;\bL)$
+	      \begin{itemize}
+	       \item 対角成分 0
+	       \item 対角成分 $v_i=1$の統計値
+	      \end{itemize}
+	      の$3\times 2 = 6$通り
+	\item ボルツマン分布$P(\bv;\bL)$
+	      \begin{itemize}
+	       \item 対角成分 0
+	       \item 対角成分 $v_i=1$の統計値
+	      \end{itemize}
+	      の$3\times 2 = 6$通り
+       \end{itemize}
+       を描く($\bW$の場合は3次元でプロット)
+ \item {\rm c++}でファイルを読みとり{\rm gibbs sampling}を実行。
+       \begin{itemize}
+	\item $\bL$
+	\item $E_{P_{data }}\left[\cdot\right]$
+	\item $E_{P_{model}}\left[\cdot\right]$
+       \end{itemize}
+       対角化の有無を合せた全6パターンの統計値をファイルへ出力する
+ \item 
+       \end{itemize}
+
+環境からの入力確率$Q(\bv)$とボルツマン分布が一致しない原因を調査
+\begin{itemize}
+ \item ボルツマン分布$P(\bv) = En(\bv;\bL)$に与える$\bL$が誤っている可能性
+       \begin{itemize}
+	\item $\bL$を代入
+	\item $E_{P_{data }}\left[\cdot\right]$を代入
+	\item $E_{P_{model}}\left[\cdot\right]$を代入
+       \end{itemize}
+       更に、
+       \begin{itemize}
+	\item 素子$v_i$が1になった確率
+	\item 自己結合無しの 0
+       \end{itemize}
+ \item {\rm gibbs sampling}で得られる標本と比較
+       \begin{itemize}
+	\item $\bL$を用いて
+	\item $E_{P_data }\left[\cdot\right]$を用いて
+	\item $E_{P_model}\left[\cdot\right]$を用いて
+       \end{itemize}
+ \item $M$,$N$のサンプリング数
+       \begin{itemize}
+	\item M,N = 1000, 1000
+       \end{itemize}
+       良い統計量が出ている
+ \item $\alpha$の値
+       \begin{itemize}
+	\item 伊達先生の実験では 0.01
+	\item 自作プログラムでは$\alpha = 1./T$(SAに従う)
+	\item アニーリングスケジュールを論文に書かれている方法を使う
+       \end{itemize}
+ \item $K$の値
+ \item 関数に誤りがないか
+       \begin{itemize}
+	\item エネルギー関数
+	      \begin{itemize}
+	       \item 内積を$\frac{1}{2}$している
+	       \item 上三角行列を足し合わせている
+	       \item 対角成分が邪魔している
+	       \item 閾値が邪魔していないか
+		     \begin{itemize}
+		      \item $w_{0i}$
+		      \item $w_{ii}$
+		     \end{itemize}
+	      \end{itemize}
+	\item 分配関数
+	      \begin{itemize}
+	       \item
+	      \end{itemize}
+       \end{itemize}
+ \item 学習則
+       \begin{itemize}
+	\item 閾値の項を更新していない
+	\item 閾値の項を更新している
+       \end{itemize}
+ \item そもそも、ボルツマン分布は正確な値がでないのではないか？
+       \begin{itemize}
+	\item $P(\bx)$:一様分布では確認した
+	\item $P(\bx)=\{0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.4, 0.1\}$
+	      :課題初期値
+	\item $D=3, n = 2^{3}$通りの全パターンをボルツマン分布で求めるに
+	      は密すぎるのではないか？
+	      $D=3, n = D$など、疎なパターンでボルツマン分布を比較する
+       \end{itemize}
+ \item KL情報量の$D(P,Q)$と$D(Q,P)$が逆になっていないか
+ \item 訓練データが
+\end{itemize}
+
+
+KL情報量が上昇しはじめる際の結合行列$\bL$、
+データ依存期待値$\bL_{data}$、
+モデル依存期待値$\bL_{model}$
+を用いてエネルギー関数によるエネルギー谷を描く。
+
+全ての順列組み合わせを求めて、
+データ依存期待値の行列、
+エネルギー関数、ボルツマン分布、{\rm reconstruction}による確率分布を求める
+
+
+
+\section{変数}
+\begin{table}[htbp]
+ \begin{center}
+  \begin{tabular}{|c|c|c|}
+   \hline
+   D& 可視素子数 & ~~~~~~~~\\
+   \hline
+   P& 隱れ素子数 & ~~~~~~~~\\
+   \hline
+   K& gibbs samplingの回数 & ~~~~~~~~\\
+   \hline
+   M& モデル依存期待値のサンプリング数 & ~~~~~~~~\\
+   \hline
+   N& データ依存期待値のサンプリング数 & ~~~~~~~~\\
+   \hline
+   vf& 可視素子のfantasy particle & ~~~~~~~~\\
+   \hline
+   hf& 隱れ素子のfantasy particle & ~~~~~~~~\\
+   \hline
+   L & 可視素子行列 & ~~~~~~~~\\
+   \hline
+   W & 可視素子から隱れ素子 & ~~~~~~~~\\
+   \hline
+   J & 隱れ素子 & ~~~~~~~~\\
+   \hline
+  \end{tabular}
+ \end{center}
+\end{table}
+\section{関数}
+%  \begin{table}
+%   \begin{center}
+%    \begin{tabular}{|c|c|}
+%     \hline
+%     sigma(double x)                 & シグモイド関数\\
+%     Pattern dtob(int n,size_t size) & 10進数から2進数へ\\
+%     int btod(const Pattern\& x)     & 2進数から10進数へ\\
+%     double energy(
+%     Pattern\& v\\
+%     Pattern\& h\\
+%     Layer  \& L\\
+%     Layer  \& J\\
+%     Layer  \& W) & エネルギー関数\\
+%     inline double eq4(
+%     int j,
+%     Layer  \& W, 
+%     Pattern\& v,
+%     Layer  \& J,
+%     Pattern\& h) & 隱れ素子の$h_j$が反転する確率\\
+
+%     inline double eq5(
+%     int i,
+%     Layer\& W,
+%     Pattern\& h,
+%     Layer\& L,
+%     Pattern\& v) & 可視素子の$v_i$が反転する確率\\
+%     double partition_function(
+%     Layer\& L,
+%     Layer\& J,
+%     Layer\& W,
+%     std::vector<Pattern>\& all_v,
+%     std::vector<Pattern>\& all_h) & 分配関数\\
+
+%     double prob_model_assign_v(
+%     Pattern \&v,
+%     Layer   \&L,
+%     Layer   \&J,
+%     Layer   \&W,
+%     std::vector<Pattern>\& all_v,
+%     std::vector<Pattern>\& all_h) & ボルツマン分布\\
+
+%     double KLd(Probability\& p, Probability\& q) & KL情報量\\
+%     \hline
+%    \end{tabular}
+%   \end{center}
+%  \end{table}
+
+
+
+
+\end{document}
+
+

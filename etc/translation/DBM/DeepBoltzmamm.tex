@@ -1,0 +1,899 @@
+\documentclass[a4paper]{jarticle} 
+\usepackage[dvips,usenames]{color} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{bm}  % for bmdefine
+% \pagestyle{empty}
+\topmargin     = 0mm
+\oddsidemargin = 5mm
+\textwidth     = 152mm
+\textheight    = 240mm
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+\bmdefine{\bx}{x}
+\bmdefine{\bv}{v}
+\bmdefine{\bh}{h}
+\bmdefine{\bL}{L}
+\bmdefine{\bJ}{J}
+\bmdefine{\bW}{W}
+
+\begin{document}
+\lhead{\small 情報システム工学科}
+\rhead{\small 2010年 11月2日\\塩貝亮宇}
+
+
+\section{Abstract}
+多数の隠れ変数を持つボルツマン機械の新しい学習アルゴリズムについて紹介する.
+
+%Data-dependent expectationは
+データに依存する期待値はシングルモードに焦点を当てた傾向
+にある変分的な近似(variational approximation)によって推定される.
+そして,データ非依存の期待値は
+(持続する|我慢する|不屈の|不変の)マルコフ連鎖によって推定される.
+
+2つの全く異なるテクニック
+
+2種類の期待値を推定すること
+
+されるテクニックの使用は
+
+対数尤度の勾配に入る
+
+より実践的に多数の隠れ層と100万のパラメータをもつボルツマン機械を学習させる。
+
+その学習は,より効果的に層と層の間で使われる.
+
+%多層の隠れ層とmillionの変数をもつ
+層と層の間で(`single bottom up pass`)により初期化される
+変動的な影響をを許す事前学習(`pre-training`)のフェーズでの
+学習はより効果的である.
+(層と層の間の学習にシングルボトムアップからの初期化「事前学習」)
+
+The learning can be made more efficient by using
+layer-by-layer `pre-training` phase that allows 
+variational inference to be initialized with a single bottomup pass.
+
+変動による影響を許す.
+
+に使われるためシングルモードに集中して,
+
+持続するマルコフ連鎖.
+
+その学習は
+
+私たちは,
+{\rm MNIST}と{\rm NORB}のデータセット
+
+ディープボルツマンマシンが良い生成モデルであることを示し,
+手書き数字と可視オブジェクトの認識タスクでの
+パフォーマンスの良い実験結果を提示する.
+
+
+'pre-training'フェーズでは
+変化を許す
+inference
+efficient
+estimate 推量
+approximate おおよその
+variational 変化の、変動の
+single mode 単一モード
+gradient 勾配
+log-likelihood 対数尤度
+
+persistent 存在し続ける,持続する
+MNIST
+NORB
+ディープボルツマン機械の学習は良い生成モデルかつ
+手書きのデジタル文字と
+可視オブジェクトの理解タスク
+
+\section{Introduction}
+ボルツマン機械のオリジナルの学習アルゴリズム(Hinton and Sejnowski,1983)は
+ランダムに初期化されたマルコフ連鎖を必要とした.
+それら(ランダムに初期化されたマルコフ連鎖)は
+データ依存とデータ非依存の期待値を推定する.
+
+データ依存とデータ非依存の期待値を推定する.
+バイナリ変数のペアの結合
+(平衡分布に近づくためにバイナリ値のペアの結合)
+平衡分布を推定するために必要とするアプローチだ.
+
+データ非依存の期待値
+バイナリ値の結合が互いに
+
+ランダムなマルコフ連鎖の初期化によるアプローチと
+データ依存とデータ非依存から予測される2値のペアによって接続される.
+予期される勾配法による学習では,最大尤度学習による勾配が必要とされている.
+
+
+
+2つの期待値の違いは最大尤度学習について必要とされる勾配だ.
+シミュレーテッドアニーリングの助けと同等で,
+この学習の手続きは実際には非常に遅い.
+
+学習方法は`RBM`ではより一層効果的にはたらくが,
+それは隠れ素子間に結合を持たない.
+
+多層の隠れ層は,ひとつの{\rm RBM}の隠れた活動として扱うことで学習可能でき
+る.高階{\rm RBM}の訓練データとして.
+(Hinton et al.,2006;Hinton and Salakhutdinov,2006)
+
+しかしながら,
+多層がこのように貪欲に学習させられ,
+層と層の方法,入れ子モデルの結果は多層のボルツマン機械と同様の結果にならない.
+(Hinton et al.,2006)
+
+これは`deep brief net`と呼ばれる(ハイブリッド|合成|掛け合せ)生成モデルで
+最上位の2つの層に無方向の結合,それの下層は全て下方向の結合を持つ.
+
+この論文では,
+よりいっそう効果的な全結合の`general Boltzmann machine`
+の学習手続きを提案する.
+
+わたしたちは
+もし,
+隠れ素子の形成する多層が
+わずかに変化したRBMの持つスタックを
+ディープボルツマン機械の重みを初期化して
+
+
+隠れ素子間の結合が制限されて,
+
+示す.
+わたしたちの(提案する)新しい学習手続きについて説明する前に,
+
+
+
+
+%greedy貪欲な
+%expectation予期する
+%equilibrium distribution 均等な分布
+%data-dependent
+%data-independent
+%gradient
+%maximum likelihood learning
+%restricted 制限された
+%Boltzmann machine(RBM)
+
+
+\section{Boltzmann Machine BM's}
+
+ボルツマン機械は確率的なバイナリ($(0,1)$)素子の結合による対称結合網であ
+る.
+
+これは可視素子$\bv \in \{0,1\}^{D}$と
+隠れ素子$\bh \in \{0,1\}^{P}$の組を含む.(図(1)参照)
+
+状態$\{\bv,\bh\}$のエネルギーは以下のように定義され,
+\begin{eqnarray}
+ E(\bv,\bh;\theta) &=& -\frac{1}{2}\bv^{T}\bL\bv
+  - \frac{1}{2} \bh^{T}\bJ\bh - \bv^{T}\bW\bh,
+\end{eqnarray}
+ここで,$\theta=\{\bW,\bL,\bJ\}$は
+モデルのパラメータ:(表記を明確にするため,バイアス項を除く)$\bW,\bL,\bJ$として表される,
+$\bW$を可視層から隠れ層,
+$\bL$を可視層から可視層,
+$\bJ$を隠れ層から隠れ層を表現する
+相互対称項(?)とする.
+
+%\begin{table}
+% \begin{tabular}{|c|c|c|}
+%  visible to hidden  & $\bW$ \\
+%  visible to visible & $\bL$ \\
+%  hidden  to hidden  & $\bJ$ \\
+% \end{tabular}
+%\end{table}
+
+$\bL$と$\bJ$の対角成分には0が代入される.
+
+このモデルに代入される可視ベクトル$\bv$の確率は
+
+\begin{eqnarray}
+ p(\bv;\theta) 
+  &=& \frac{p^{*}(\bv;\theta)}{Z(\theta)} \\
+ &=& \frac{1}{Z\left( \theta \right)}
+  \sum_{h}\exp(-E(\bv,\bh;\theta)),\\
+ Z(\theta) &=& \sum_{\bv} \sum_{\bh} exp(-E(\bv,\bh;\theta)),
+\end{eqnarray}
+
+ここで$p^{*}$は非正規確率で$Z(\theta)$は分配関数を表わす.
+
+条件付き分布を越える隠れ素子と可視素子は
+\begin{eqnarray}
+ p(h_j=1 | \bv, \bh_{-j})
+  &=& 
+  \sigma(\sum^D_{i=1} W_{ij} v_i + \sum^P_{m=1 \verb=\= j} J_{jm} h_j),\\
+ p(v_i=1 | \bh, \bv_{-i})
+  &=&
+  \sigma(\sum^P_{j=1} W_{ij} h_j + \sum^{D}_{k=1\verb=\=i} L_{ik} v_j ),
+\end{eqnarray}
+
+ここで,$\sigma(x) = 1/(1 + exp(-x))$はロジスティック関数である.
+
+変数の更新は,HintonとSejnowski(1983)の提案で,
+それらは式(2)から導出できる対数尤度の勾配を必要とし:
+\begin{eqnarray}
+ \Delta \bW &=& \alpha(
+  E_{P_{data }}\left[\bv\bh^{T}\right]-
+  E_{P_{model}}\left[\bv\bh^{T}\right]
+  ),\\
+ \Delta \bL &=& \alpha(
+  E_{P_{data }}\left[\bv\bv^{T}\right]-
+  E_{P_{model}}\left[\bv\bv^{T}\right]
+  ),\\
+ \Delta \bJ &=& \alpha(
+  E_{P_{data }}\left[ \bh\bh^{T}\right ] -
+  E_{P_{model}}\left[\bh\bh^{T}\right]
+  ),
+\end{eqnarray}
+
+ここで,$\alpha$は学習率をあらわし,
+
+$E_{P_{data}}\left[ \cdot \right]$は
+全てのデータの分布
+\begin{eqnarray}
+ P_{data}(\bh, \bv;\theta) &=& p(\bh|\bv;\theta)P_{data}(\bv),\\
+ P_{data}(\bv)             &=& \frac{1}{N}\sum_{n} \delta(\bv - \bv_{n})\\
+\end{eqnarray}
+の関係を示しており,
+経験分布$E_{P_{dmodel}}\[\cdot\]$
+データ依存期待値$E_{P_data}\[\cdot\]$と
+モデルの期待値$E_{P_model}\[\cdot\]$.
+
+そのうち
+データに依存する期待値として$E_{P_{data}}\left[\cdot\right]$,
+モデルの期待値として$E_{P_{model}}\left[\cdot\right]$
+について言及する.
+
+このモデルでは,正確な最尤推定学習(`maximum likelihood learning`)は扱いにくい.
+なぜならば,
+データ依存の期待値もモデルの期待値も正確な計算には
+隠れ層の素子の数の累乗倍の時間がかかるからだ.
+
+HintonとSejnowski(1983)は
+(データ依存とモデルの)期待値の両方を近似させるためのアルゴリズムに
+ギブスサンプリングを使うことを提案した.
+
+それぞれの学習の反復について,
+離散マルコフ連鎖(`separate Markov chain`)は
+全ての訓練データベクトルを近似するために$E_{P_{data}}\[\cdot\]$を実行し,
+そして,
+追加の鎖は$E_{P_{model}}\[\cdot\]$を近似する.
+
+a separate Markov chain is run for every training data vector
+to approximate $E_{Pdata}\left[\cdot\right]$,and an additional
+chain is run to approximate $E_{Pmodel}\left[\cdot\right]$.
+
+この学習アルゴリズムにおける主要な問題は
+定常分布に至るのに時間がかかる.
+とくに,モデルの期待値を推定するとき,
+ギブス鎖は高い多数モデルのエネルギーの谷を探索する必要があるだろう.
+
+これは現実世界のモデリングの分布
+例えば
+
+
+ほとんど全部の画像が極端に低い確率の画像データセット,
+しかし,かなり似た確率で発生する多くのとても異なったイメージがある.
+
+$\bJ=0$,$\bL=0$と設定し,
+よく知られている
+{\rm Restricted Boltzmann machine(RBM)}モデル
+に直す.(Smolensky,1986)(図1,右)
+
+一般的なボルツマン機械と比較して{\rm RBM's}の推定は正確だ.
+
+{\rm RBM}の正確な最大尤度推定学習(`maximum likelihood learning`)
+とはいえ,まだ扱いにくく,
+学習は{\rm Constrastive Divergence}を実行することで,
+効果的に実行できる.(Hingon,2002)
+
+更なる観測として(WellingとHinton,2002;Hinton,2002)
+{\rm Constrastive Divergence}のパフォーマンスが良いことが観測された.
+条件付分布$p(\bh|\bv;\theta)$から正確な標本を獲得することが重要で,
+完全結合のボルツマンマシンの学習のときは扱いにくいものだった.
+
+
+\section{Using Persistent Markov Chains to Estimate the Model's Expectations}
+
+{\rm CD learning}の代替として,
+モデルの期待値を近似するために
+{\rm stochastic approximation procedure(SAP)}
+を使用することができる.
+(Tieleman,2008;Neal,1992).
+
+{\rm SAP}は{\rm Robbins-Monro}型の統計近似アルゴリズムに属する.
+(Robbins and Monro,1951; Younes,1989,2000).
+そのアイディアの背景は直接的だ.
+
+$\theta_{t}$を現在のパラメータ,
+$X^{t}$を現在の状態としよう.
+このとき,$X^{t}$と$\theta^{t}$は以下のように順番に更新される.
+
+\begin{itemize}
+ \item $X^{t}$が与えられ,
+       新しい状態$X^{t+1}$は
+       不変な$p_{\theta_}$をもつ
+       遷移オペレータ$T_{\theta_t}(X^{t+1};X^t)$
+       から抽出される.
+ \item 新しいパラメータ$\theta_{t+1}$は
+       扱いにくいモデルの期待値を
+       $X^{t+1}$と関係する期待値によって置き換えられる.
+       A new parameter $\theta_{t+1}$ is then obtained by replacing
+       the intractable model's expectation by the expectation with
+       respect to $X^{t+1}$
+\end{itemize}
+
+十分に正確な量の状態
+ほとんど漸近的な点に収束する点は保障する
+漸近的に安定な点は与えられる.
+Precise sufficient condtion that gurantee almost sure
+convergence to an asymptotically stable point are given in.
+
+ひとつの必要とされる状態は
+時間による学習率の低下で,
+\begin{eqnarray}
+ \sum^{\infty}_{t=0} \alpha_t &=& \infty \\
+ \sum^{\infty}_{t=0} \alpha^2_t &<& \infty \\
+\end{eqnarray}
+
+この状態は,
+\begin{eqnarray}
+ \alpha_{t} = \frac{1}{t}
+\end{eqnarray}
+と設定することを満足させる.
+
+一般的に,実際にやってみると,
+数列$\|\theta_t\|$は束縛され,
+そして,マルコフ鎖,
+遷移核(`transition kernel`)$T_{\theta}$によって得られ,
+エルゴート的だ.
+
+学習率の状態と一緒で,ほぼ確実に収束する.
+
+直感的に何故この次のようなのだろう:
+学習率は
+
+
+\section{A Variational Approach to Estimationg the Data-Dependent Expectations}
+変分学習$(variational learning)$(Hinton and Zemel, 1994; Neal and
+Hinton, 1998),
+各訓練ベクトルについて潜在的な変数からの
+真の事後分布$p(\bh|\bv; \theta)$は
+近似事後$q(\bh|\bv;\mu)$に置き換えられ,
+そしてパラメータは次式の対数尤度上の下限の勾配により更新される.
+\begin{eqnarray}
+ \ln p(\bv;\theta)
+  &\le& \sum_{\bh} q(\bh|\bv;\mu) \ln p(\bv,\bh;\theta) + {\cal H}(q)\\
+ &=& \ln p(\bv;\theta)
+  - KL
+  \left[
+   q(\bh|\bv;\mu) \| p(\bh|\bv;\theta)
+  \right],
+\end{eqnarray}
+ここで,${\cal H}(\cdot)$はエントロピー関数をあらわす.
+変分学習$(variational learning)$は
+訓練データの対数尤度を最大化しようとする良い手続きで,
+これは
+近似値と真の事後確率の間の
+{\rm Kullback-Leibler divergences}
+を最小化するパラメータを見つける.
+
+平均場(`naive mean field`)のアプローチを用いることで,
+必要とする近似事後確率を全て因数分解し
+\begin{eqnarray}
+ q(\bh;\mu) &=& \Pi^{P}_{j=1} q(h_i), with q(h_i=1)=\mu_i
+\end{eqnarray}
+ここで$P$は隠れ素子の数である.
+
+対数確率の下限は次式の形体をとり,
+\begin{eqnarray}
+ \ln p(\bv;\theta) &\ge& \frac{1}{2} \sum_{i,k} L_{ik}v_{i}v_{k} +
+  \frac{1}{2}\sum_{j,m} J_{jm}\mu_j\mu_m\\
+ &+& \sum_{i,j} W_{ij} v_{i} \mu_{j} - \ln Z(\theta)\\
+ &+& \sum_{j} \left[\mu_j \ln \mu_j + (1 - \mu_j) \ln(1 - \mu_j) \right].
+\end{eqnarray} 
+
+$\theta$について修正した変動パラメータ$\mu$に関係する
+下限を最大化しながら学習は進んでいき,
+平均場の修正点の方程式は
+\begin{eqnarray}
+ \mu_j \leftarrow \sigma(\sum_i W_{ij} v_i+\sum_{m\verb=\=j} J_{mj}\mu_{m})
+\end{eqnarray}
+
+これは{\rm SAP}をモデルパラメータ$\theta$を適応による更新
+(Salakhutdinov, 2008).
+
+変動近似(`variational learning`)が
+ボルツマンマシンの学習則でモデルの近似した期待値と一緒
+近似した期待値を使用することができないことを強調する.
+なぜならば,負の符号(式6)は
+近似値と真の分布の間のダイバージェンスを最大化するために
+パラメータを変化させるための変動学習を引き起こすだろう.
+
+もし,しかしながら,モデルのもつ期待値の推定に
+持続する鎖(`persistent chain`)が使われ,
+データ依存の期待値を推定するために変動学習は適応される.
+
+{\rm naive mean-field}の選択はよく考えられている.
+まず,収束が非常に速く,学習をとても容易にする.
+
+2つ目に,
+イメージやスピーチなどの補間に適応され,
+シングルモードをとるための
+隠れ状態によって与えられる.
+
+実際は,
+真の`posterior unimodel`を
+
+それの活動を事後確率を使うシステムについて
+.
+
+同じセンサーの良い表現は
+入力を対数尤度を増加させるが,
+より
+
+そのセンサー入力の適当な行動は
+.
+
+\section{Deep Boltzmann Machine(DBM's)}
+一般的にいえば,全結合のボルツマンマシンについての複雑な学習則に興味を持
+つことは稀である.
+
+
+代わりに,図(2)の左に示した各層の受容野が複雑で,
+下層にある隠れ特徴量の活動間に高階な相関をもつ
+{\rm Deep Multilayer Boltzmann machine}
+について考える.
+
+{\rm Deep Boltzmann machine}は様々な理由で興味深い.
+
+まず,`deep blief network`に類似しており,
+複雑さを増やす中間層の表現での学習により,
+物体や音声認識の問題を解くための見込みある方法として考えられている.
+
+次に,
+高階表現は分類されていない受容野からの供給と
+非常に制限をもって分類されたデータを
+(間近に,at hand)指定されたタスクについてモデルをわずかに微調整する.
+
+最後に,{\rm deep Belief network}とは違い,
+近似を推定する手続き,
+加えて最初のボトムアップパス,
+トップダウンフィードバックを組み込むことができ,
+ディープボルツマンマシンは
+不確かな増殖について,
+そして,
+より一層にロバスト
+不明瞭な入力.
+
+
+図(2右)に示す,層の内側に結合がない2層のボルツマンマシンについて考える.
+状態${\bv,\bh^1,\bh^2}$のエネルギーは以下のように定義し,
+
+\begin{eqnarray}
+ E(\bv,\bh^1,\bh^2;\theta) &=&
+  -\bv^{T}\bW^{1}\bh^{1}  -
+  \bh^{1T} \bW^{2} \bh^{2},
+\end{eqnarray}
+
+ここで,$\theta = \left{ \bW^1, \bW^2\right}$はモデルパラメータで,
+可視層から隠れ層($\bW^1$),隠れ層から隠れ層($\bW^2$)となる対称項を示す.
+
+\begin{eqnarray}
+ p(\bv;\theta) &=& \frac{1}{Z(\theta)} \sum_{\bh^1, \bh^2}
+  \exp(-E(\bv,\bh^1,\bh^2;\theta)).\\
+\end{eqnarray}
+
+可視と隠れ素子の2つからロジスティック関数によって得られる条件付分布は
+\begin{eqnarray}
+ p(h^{1}_{j}=1|\bv,\bh^2) &=& 
+  \sigma(\sum{W^{1}_{ij} v_{i}} + \sum_{m} W^{2}_{jm} h^{2}_{j} )\\
+ p(h^2_m=1| \bh^1) &=& \sigma(\sum_j W^{2}_{im} h^{1}_{i})\\
+ p(v_i  =1| \bh^1) &=& \sigma(\sum{W^{1}_{ij} h_{j}    }).\\
+\end{eqnarray}
+
+最尤推定学習による近似について,
+私たちは,
+まだ{\rm General Boltzmann machines}の学習手続きを適応できる
+が,
+むしろその手続は遅く,
+とくに可視素子層から遠くにある隠れ素子が形成する層が増加するほど.
+
+しかしながら,モデルパラメータを速く初期化する方法がある.
+次章では(利にかなった,sensible)モデルパラメータの初期化を説明する.
+
+\section{Greedy Layerwise Pretraining of DBM's}
+
+Hinton et al.(2006)は
+{\rm RBM}の持つある層のスタックを同時に学習できる
+貪欲な学習アルゴリズムを紹介した.
+
+{\rm RBM}が持つスタックの学習後は,
+全てのスタックは1つの確率モデルと見なされ,
+これは`deep belief network`と呼ばれる.
+
+驚くべきことに,このモデルは{\rm Deep Boltzmann machine}ではない.
+
+トップの2層は無方向グラフの{\rm RMB}だが,
+下層は有向グラフの生成モデルを形成している(図2参照).
+
+このスタック中の最初の{\rm RBM}を学習した後,
+生成モデルは次式のように書くことができる.
+\begin{eqnarray}
+ p(\bv;\theta) &=& \sum_{\bh^1} p(\bh^1;\bW^1) p(\bv|\bh^1; \bW^1),\\
+\end{eqnarray}
+
+ここで,
+\begin{eqnarray}
+$p(\bh^1;\bW^1)=\sum_{\bv}p(\bh^1, \bv; \bW^1)$
+\end{eqnarray}
+は,
+事前に暗黙的に$\bh^1$から定義されたパラメータである.
+
+スタック中の2番目の{\rm RBM}は$p(\bh^1;\bW^1)$は
+\begin{eqnarray}
+ $p(\bh^1;\bW^2)=\sum^{\bh^2} p(\bh^1, \bh^2; \bW^2)$
+\end{eqnarray}
+に置き換える.
+
+もし,2番目の{\rm RBM}が正しく初期化されていれば(Hinton at el.,2006),
+$p(\bh^1;\bW^2)$は$\bh^1$の
+事後確率の集合より良いモデルとなるだろう.
+
+ここでの事後確率の集合は全ての訓練のケースは,
+単純な(non-factorial, 非階乗事後)が混じった
+(階乗事後,factorial posterior)である.
+
+したがって,
+\begin{eqnarray}
+ \frac{1}{N} \sum_{n} p(\bh^1|\bv_n;\bW^1)\\
+\end{eqnarray}
+
+2番目の{\rm RBM}は
+\begin{eqnarray}
+ $p(\bh^1;\bW^1)$
+\end{eqnarray}
+から,より良いモデルに置き換えられて,
+\begin{eqnarray}
+ p(\bh^1;\bW^1,\bW^2)\\
+\end{eqnarray}
+は
+\begin{eqnarray}
+ \frac{1}{2} \bW^{1}
+\end{eqnarray}
+と
+\begin{eqnarray}
+ \frac{1}{2} \bW^{2}
+\end{eqnarray}
+を用いて近似できた
+\begin{eqnarray}
+ \bh^{1}
+\end{eqnarray}
+の2つのモデルの平均から推論される.
+
+ボトムアップ$\bW^1$とトップダウン$\bW^2$を使うことは,
+$\bv$に依存する$\bh^2$からの(証言,証拠,evidence)を
+ダブルカウントする量になるだろう.
+
+{\rm DBM}のモデルパラメータを初期化するために,
+{\rm RBM}が持つスタックの学習による
+層と層の事前学習の貪欲な方法を提案するが,
+
+トップダウンとボトムアップの影響を一体化した後に
+ダブルカウント問題を除いた小さな変化と一緒に.
+
+下位レベルの{\rm RBM}について,
+2倍の入力と可視層から隠れ層への重みの結合を図(2)右に示す.
+
+この結合したパラメータ{\rm RBM}の変化は隠れと可視状態からの事後確率が次式のように定義される.
+%(15),(16)
+\begin{eqnarray}
+ p(h^i_j=1|\bv)   &=& \sigma(\sum_i W^1_{ij} v_i + \sum_{i} W^1_{ij}v_i),\\
+ p(v_i  =1|\bh^1) &=& \sigma(\sum_j W^1_{ij} h_j).
+\end{eqnarray}
+
+{\rm Contrastive divergence learning}はうまく働き,
+そして,変化した{\rm RBM}は,それの良い訓練データを再構築する.
+
+反対に,トップレベルの{\rm RBM}について私たちは隠れ素子の数を2倍にする.
+
+このモデルについての条件付分布は次の形式をとる:
+%(17),(18)
+\begin{eqnarray}
+ p(h^1_j=1|\bh^2) &=& \sigma(\sum_m W^2_{jm} h^2_m + \sum_m W^2_{jm} h^2_m)\\
+ p(h^2_m=1|\bh^1) &=& \sigma(\sum_j W^2_{jm} h^1_j).
+\end{eqnarray}
+
+これら2つのモジュールが1つのシステムとして(落ち付き,構成する,compose)とき,
+最初の隠れ層への総合的な入力は次式の$\bh^1$からの条件付分布の半分になる.
+\begin{eqnarray}
+ p(h^{i}_{j} = 1|\bv,\bh^{2})
+  &=& \sigma(\sum_{i}{W^{i}_{ij} v_{i}
+  + \sum_{m} W^{2}_{jm} h^{2}_{m}})\\
+\end{eqnarray}
+$\bv$と$\bh^{2}$についての条件付分布は式(16),(18)に定義したままである.
+
+{\rm composed model}によって定義された条件付き分布は
+{\rm DBM}によって定義された式(11,12,13)の条件付分布と同じものとなる.
+
+従って,
+意欲的な事前訓練は2つを変更した{\rm RBM}
+対称の重みをもつ無方向グラフモデルを導く
+-{\rm deep boltzmann machine}.
+
+2つ以上の{\rm RBM}のスタックを貪欲に事前学習させたとき,
+スタックの最初と最後の{\rm RBM}は変更のためだけに必要となる.
+
+{\rm RBM}の全ての仲介人はどちら向きの重みであっても
+ディープボルツマンマシンの形体をとる入れ子になったとき,
+それらの重みを半分にする.
+
+こうした手法による貪欲な事前訓練による{\rm DBM}の重みは2つの役目を果たす.
+
+まず,累乗的な面,気の効く値でそれを初期化.
+2つ目,
+{\rm RBM}のスタックのパスを上向きに通ることによって
+近似の影響が非常にはやくなることが保障される.
+
+可視素子上でデータベクトルを与えると,
+各層における隠れ素子は.
+(トップダウンからの入力がない一番上の層を除く)
+
+この高速な推定の近似は平均場法として初期化され,
+ランダムに初期化された場合よりも高速に収束する.
+
+\section{Evaluting DBM's(DBMの評価)}
+
+近年,SalakhutdinovとMurray(2008)はモンテカルロに基づいた,
+{\rm Annealed Importance Sampling(AIS)},
+{\rm RBM}の機能の一部として効果的な推定を用いた.
+
+この章では,
+{\rm AIS}が
+{\rm deep boltzmann machine}の機能の一部を
+推測するのに効果的に用いることができることを示す.
+
+変動推測(`variational inference`)と一緒で,
+これはテストデータの対数確率上で下限の良い推定が獲得できることを許す.
+
+2つの分布を仮定する
+確率密度関数：
+$p_{A}(x) &=& p^{*}_{A}/Z_{A}$と
+$p_{B}(x) &=& p^{*}_{B}/Z_{B}$より,
+いくつかの空間$\Chi$から2つの分布を定義する.
+
+一般的に$p_{A}(\bx)=p^{*}_{A}(\bx)/Z_A$は
+いくつかの単純な既知の分布$Z_{A}$と容易にi.i.dな標本を描くことができる.
+
+{\rm AIS}は
+$Z_B/Z_A$を仲介となる分布の数列を用いて
+$p_0,\ldots,p_k$と$p_0=p_A$と$p_K = p_B$.
+の比より推定される.
+
+それぞれの仲介となる分布は,
+非正規確率
+
+容易に評価することができる.
+そして,マルコフ連鎖の遷移オペレータ$T_{k}(\bx';\bx)$を$p_k(\bx)$を不変な
+まま用いることで$\bx'$から$\bx$の標本を得ることができる.
+
+`deep Boltzmann machine`の層と層の特定の構造を用いることは,
+モデルの持つ機能の一部を推定するために,
+より一層効果的に{\rm AIS scheme}で導き出せる.
+
+\begin{eqnarray}
+ p_k(\bh^1)
+  &=& \sum_{\bv,\bh^2} p(\bv,\bh^1,\bh^2)\\
+ &=& \frac{1}{Z_k}
+ \Pi_i(1+\exp(\beta_k\sum_j{h^1_j W^1_{ij}}))
+ \Pi_k(1+\exp(\beta_k\sum_j{h^1_j W^2_{jk}}))\\
+\end{eqnarray}
+
+このアプローチはシミュレーティッドアニーリングに近い.
+$\beta_k$を0から1へと徐々に変化させ(または,逆温度`inverse tempature`)
+単純な`uniform model`から最終的な複合モデルに変化させていく.
+式(11,12,13)を用いることは,ギブス遷移のオペレータを
+不変的な$p_k(\bh^1)$のまま直接的に導き出すことができる.
+
+かつて,
+大域分配関数(`global partion function`)$\hat Z$の推定から獲得し,
+テストケース$\bv^{*}$を与えることによって式(7)の下限を推定できた.
+
+\begin{eqnarray}
+ ln p(\bv^{*};\theta)
+  &\ge& - \sum_{\bh} q(\bh;\mu) E(\bv^{*}, \bh;\theta) + 
+  {\cal H}(q) - \ln Z(\theta)\\
+ &\approx& -\sum_{\bh} q(\bh;\mu) E(\bv^{*},\bh;\theta) +
+  {\cal H}(q) - ln \hatZ,\\
+\end{eqnarray}
+
+ここで,$\bh = {\bh^1,\bh^2}$を定義する.
+それぞれのテストベクトルについて,
+この下限は平均場の更新方程式を使うことで
+変動パラメータ$\mu$の値を最大化することができる.
+
+さらに,明示的に隠れ素子$\bh^2$の状態を足し合わせることで,
+我々はテストデータの対数確率の下限を獲得することができる.
+
+もちろん,
+$\sum_{\bh^1,\bh^2} p^{*}(\bv,\bh^1,\bh^2)$
+を推定するために{\rm AIS}を適応することができる.
+そして,
+実際に真のテストデータの対数確率から
+大分配関数を推定することができる.
+
+これはしかしながら,
+計算的に高価で.
+それぞれのテストデータに離散{\rm AIS}(`separate AIS`)を実行することで,
+良いパフォーマンスを得ることができる.
+
+2つ以上のディープボルツマンマシンの層を学習させたとき,
+奇数か偶数の層を明確に足し合わせることができる.
+
+この結果は
+モデルの分配関数と
+テストデータの対数確率のしっかりとした下限
+の良い推定結果を与えるだろう.
+
+
+
+
+\section{Discriminative Fine-tuning of DBM's}
+学習させた後に,
+各層におけるバイナリの統計的活動の特徴は
+(決定した|決定された|確立した)ものに置き換えることができ,
+実数の確率,
+(そして|と),
+ディープボルツマンマシンは
+以下の方法を用いることで(決定された)多層の
+ニューラルネットワークを初期化する.
+
+それぞれの入力ベクトル$\bv$,
+平均場の影響(?mean field inference)は,
+事後確率$q(\bh|\bh)$の近似を用いて獲得されていた.
+事後確率$q(h^{2}_{j}|\bv)$の近似の周辺確率,
+このデータと一緒に,「増大された」('augmented')
+図(3)に示す深層多層ニューラルネットワーク(deep multilayer NN)
+への入力を作成していた.
+標準的な誤差逆伝播法は識別的な微調整するモデルに(使われるだろう|使うこと
+ができる|用いられる|使われていた).
+
+その入力の(独自|特徴的)な表現は識別的なニューラルネットワークから`DBM`に変換でき
+ることだ.
+一般的に勾配法を元にした微修正(gradient-based fine-tuning)は
+$q(\bh^2|\bv)$の選択を気にしないかもしれない.
+この事後確率の近似の周辺分布$q(h^2_j=1|\bv)$,
+データと一緒に,
+
+したがって,
+$\bW^2$の最初の層の進行(drive)はゼロに向かい,
+標準的なニューラルネットワークの結果を得るだろう.
+反対に,ネットワークは最初の層の$\bW^1$からの進行はゼロに向かうだろう.
+
+これらの実験から,しかしながら,
+ネットワークは全体の作成された予測について増大された入力を用いる.
+
+\section{Experimental Results}
+実験では,{\rm MNIST}と{\rm NORB}のデータセットを用いる.
+
+学習を早めるために,
+データセットをそれぞれが100個の場合を含んでいる`mini-batche`に再分割し,
+そして,各`mini-batch`の重みを更新する.
+`fantasy particles`の数は$100^2$.
+(確率\|統計)的近似アルゴリズムについて,
+`fantasy particle`の数は常に`5 Gibbs update`を用いる.
+初期の学習率は$0.005$にセットされ,徐々に0に向って減少していく.
+{\rm DBM}のもつ識別的な微調整(`discriminative fine-tuning`)
+には,私たちは
+それぞれの世代の
+5000より広い`mini-batch`について3行ずつ探索をおこない,
+
+\section{MNIST}
+{\rm MNIST}デジタル文字セットは$60,000$の
+訓練データと$10,000$のテスト画像
+$28\times 28$画素の$0〜9$の手書き文字から出来ている.
+我々の最初の実験では,
+2つのディープボルツマン機械：
+ひとつは2つの隠れ層(500個と1000個の素子)を持つものと,
+もうひとつは3層の隠れ層を持つ(500,500,1000個の隠れ層)を持つ(図(4)).
+
+モデルの持つ部分関数の推定に,
+$\beta_k$のぼんやりした(`spaced`)一様な$0〜1.0$.
+
+テーブル1はテストの平均上での対数確率の下限
+(`2-と3-層の`)個々のボルツマン機械の推定値を示している.
+
+この結果は
+比較してわずかに優れている.
+
+2層の`Deep Belief network`.(Salakhutdinov and Murray,2008).
+
+2つの`DBM`を観測すると,$0.9$以上$1.15$百万のパラメータを含み,
+表われない~`overfitting`.
+訓練データの推定値とテストの対数確率の違いは,
+図(4)の示すサンプルは
+2つの全てのバイナリ状態がランダムに初期化され,そして,
+$100,000$ステップ実行したギブスサンプリング
+から生成された.
+確かに,全ての標本は本物の手書き文字のように見える.
+また,貪欲な事前学習(`greedy pretraining`)なしで,
+{\rm MNIST}デジタル手書き文字の`DBM`モデルの学習を成功させることはできな
+かったことに留意する.
+
+失なわれた変動束縛(`variational bound`)が
+推定することが
+
+最終的に識別的な微調整(`discriminative fine-tuning`)は
+全ての{\rm MNIST}テストセットでは,
+エラー率は{\rm BM}の$0.95\%$に達成する.
+これは,わたしたちの知るところで,{\rm MNIST}タスクの順列の不変性
+の結果となる.
+
+3層{\rm BM}は$1.01\%$のエラー率よりわずかに悪い.
+
+これは,比較すると{\rm SMV's}の$1.4\%$に至り(Decoste and Scholkopf,2002),
+ランダムに初期化した誤差逆伝播の$1.6\%$に至り,
+`deep blief network`の$1.2\%$に至る(described in Hinton et al.(2006)).
+
+\section{NORB}
+{\rm MNIST}の結果を示すと
+多くの他のモデルの方がわずかに良い結果を示すが,
+比較的に手書き文字認識の単純なタスクは,.
+
+この章では,
+{\rm NORB}での結果を示し,
+{\rm MNIST}のより異なる結果を示す.
+
+{\rm NORB}(LeCun et al.,2004)は
+
+車,トラック,飛行機,動物,人間の5つの物体ごとに.
+
+各オブジェクトはそれぞれ異なる視点から撮影され,
+様々な光源の位置もとで変更する.
+
+それぞれの訓練データは25オブジェクトのステレオ画像のペアと5つのクラス,
+$24,300$ステレオペアが,25個の異なるオブジェクト. 
+ゴールは前もって観測されない一般的なオブジェクト.
+
+
+それぞれの画像は$\left[0,255\right]$の範囲の
+整数のグレースケール値
+$96\times96$画素.
+
+実験を早めるために,
+画像の                  
+9216から4488
+
+
+ascent 上がること
+
+diagonal 斜めの
+
+stochastic 確率の
+
+\section{Conclusions}
+多層ボルツマンマシンの訓練アルゴリズムについて提示し,
+それは良い生成モデルの学習であることを示した.
+この手続きは
+`real-value`,`count`,`tabular data`とともに
+ボルツマンマシン学習の拡張をおこない
+指数分布族(`exponential family`)の分布を提供した.(Welling et al.,2005)
+AISシミュレータが,変動推測に沿う,
+テストデータを与えられる
+多数の隠れ層をもつボルツマンマシンの
+対数確率の下限の推定値を使用することができる.
+
+最終的に特徴的な(`discriminatively`)はよく調整された
+{\rm DBM's}のパフォーマンスは
+{\rm MNIST}と{\rm NORB 3D object}の認識タスク
+で良い結果を示した.
+
+%bibitem{amari91a}
+%甘利 俊一，``ニューロ多様体の情報幾何学,'' 
+%数理科学, no. 340, pp. 61--65, Oct, 1991.
+%\end{thebibliography}
+\end{document}
+
